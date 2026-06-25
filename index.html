@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Housemaster — Портал заботы о доме</title>
+<meta name="description" content="Housemaster: общественный портал культуры ответственного попечения о многоквартирном доме.">
+
+<!--
+  ====================================================================
+  HOUSEMASTER PUBLIC STEWARDSHIP PORTAL — MVP Build
+  Minimal Working Linkage: Portal + ROOF Corpus + Media Pack
+  ====================================================================
+  Базовая сборка для этого MVP — провалидированный Iteration 0.3
+  Stabilized Build (см. примечание ниже о его собственной истории).
+  Добавлен один новый раздел: "ROOF MVP Knowledge Loop" (#roof-mvp) —
+  статическая демонстрация связки Portal → ROOF Knowledge Corpus →
+  Knowledge Unit → Media Script, без новых архитектурных сущностей,
+  без новых платформ, без новых AI-агентов сверх уже упомянутого Roof
+  Agent. Контент раздела использует только уже существующие CSS-классы
+  (.chain-row, .map-list, .gallery-card, .status-badge, .pill l1/l2/l3,
+  .commons-cycle, .platform-chip, .future-card) — новых стилей не
+  добавлено, новый JS не добавлен (раздел статический, без интерактива).
+  ====================================================================
+  Примечание к пересборке. Каталог `portal_v0_3_refactor/` с результатом
+  инженерного рефакторинга Codex (вынесенные CSS/JS/data, компонентная
+  структура) не найден в рабочем пространстве на момент пересборки —
+  входным материалом для этой сборки служит ранее провалидированный
+  единый файл Iteration 0.3 (этот же файл). Пересборка выполнена как
+  стабилизационный проход: повторная проверка баланса тегов, синтаксиса
+  JS, уникальности id и запрещённой лексики — без новых разделов,
+  без новых сущностей, без перехода к Iteration 0.4. Контент домена
+  ROOF в House Map проверен на отсутствие противоречий с
+  `HOUSEMASTER_ROOF_KNOWLEDGE_CORPUS_V1.0.md`: расхождений не найдено
+  (уровни severity и формулировки SOP/Act совпадают на уровне общности,
+  принятом для портала).
+  ====================================================================
+  Один самодостаточный файл. Без внешних зависимостей, без CDN.
+  Источники контента: HOUSEMASTER_PUBLIC_STEWARDSHIP_PORTAL_V1.0.md,
+  HOUSEMASTER_BEHAVIORAL_OPERATING_SYSTEM_V0.1.md,
+  HOUSEMASTER_ONTOLOGY_V0.1.md, HOUSEMASTER_сайт_контент_v1.1.md,
+  HOUSEMASTER_EXECUTIVE_KNOWLEDGE_GRAPH_ARCHITECTURE.md,
+  HOUSEMASTER_SYSTEM_MANIFEST.md (в разработке).
+
+  Что изменилось в 0.3 относительно 0.2:
+  — Добавлен раздел "Housemaster Interface Library": Component Gallery
+    из 12 компонентов (Ontology source → Component → Used in → Example
+    → Status → Future reuse), статусные бейджи (STABLE / PROTOTYPE /
+    PLACEHOLDER / FUTURE MODULE / NEEDS REVIEW), Component Interaction
+    Demo (Ontology Node → Component → Interface → Product Reuse) и
+    House Timeline (placeholder истории дома).
+  — Добавлена Global Context Panel — постоянная панель в правом нижнем
+    углу, которая обновляется при выборе домена, симптома, AI Guide
+    intent, узла графа знаний или узла Component Demo.
+  — CSS размечен крупными разделами: TOKENS / BASE / LAYOUT / NAV /
+    BUTTONS / CARDS / COMPONENT GALLERY / INTERACTIVE MODULES /
+    RESPONSIVE (см. комментарии внутри <style>).
+  — JS: выделен общий блок UTILS (truncate, setGlobalContext), который
+    используют все модули; в заголовке ниже — карта существующих
+    модулей в терминах STATE / DATA / RENDERERS / EVENT HANDLERS.
+  — Прежние модули (House Map, Symptom Navigator, AI Guide, Knowledge
+    Graph, nav/reveal) не переписаны — только дополнены вызовом
+    setGlobalContext в конце своих render-функций.
+
+  Что изменилось в 0.2 относительно 0.1 (сохранено для истории):
+  — House Map: каждый домен получил Domain Route
+    (Domain → Symptoms → Checklist → Act → SOP → Case → Discussion → AI Agent).
+  — Symptom Navigator и House Map связаны двусторонне.
+  — Добавлен AI Stewardship Guide.
+  — Commons Preview дополнен разделом "What the Commons will contain".
+  — Добавлен раздел Living Knowledge Graph Preview.
+  — Введена системная карточная типографика: .knowledge-card,
+    .case-card, .sop-card, .agent-card, .artifact-card, .media-card.
+
+  Блоки, отмеченные как PLACEHOLDER / FUTURE MODULE / PROTOTYPE, не
+  являются обещанием готовой функциональности — компоненты раздела
+  Interface Library являются кандидатами дизайн-системы, а не готовыми
+  production-модулями (см. принцип честности портала, раздел
+  "Portal Philosophy").
+  ====================================================================
+  MVP Build · Public Language Pass (RU UX pass над этой же сборкой).
+  Это не Iteration 0.4 и не новая архитектура — точечный проход по
+  пользовательскому слою файла index_mvp.html (этот файл сохранён без
+  изменений, результат записан отдельно в index_mvp_ru.html):
+  — Добавлен один новый блок-рубрикатор "Что вы хотите сделать?" после
+    Hero (#quickstart, 6 карточек-ссылок на уже существующие якоря
+    #symptoms / #house / #roles / #ai-guide / #roof-mvp / #academy).
+  — Видимые подписи навигации и eyebrow-заголовки разделов переведены
+    на русский (id якорей и href не менялись).
+  — Карточки ROOF Knowledge Units, узлы Living Knowledge Graph Preview
+    и верхняя статус-плашка переведены по словарю, технические коды
+    (ROOF-L2-001, KU-ROOF-001, L1/L2/L3 и т.п.) сохранены.
+  — Раздел Housemaster Interface Library помечен как служебный для
+    команды проекта; в меню переименован в "Для команды"; его
+    внутренние ярлыки (STABLE/PROTOTYPE/Ontology source/Used in и т.п.)
+    оставлены без перевода как внутренняя, не пользовательская часть.
+  — Новые домены, AI-агенты, медиаформаты, уровни зрелости или разделы
+    онтологии не добавлялись.
+  ====================================================================
+-->
+
+<style>
+  /* ============================================================
+     CSS ARCHITECTURE (Iteration 0.3)
+     1. TOKENS               — :root переменные
+     2. BASE                 — *, body, типографика, .wrap
+     3. LAYOUT                — section, .pad, .on-dark/.on-light/.on-graphite
+     4. NAV                  — .site-nav, .nav-inner, .links
+     5. BUTTONS              — .btn и модификаторы
+     6. CARDS                — .charter-card … .partner-chip (контентные секции 0.1–0.2)
+     7. COMPONENT GALLERY    — Interface Library, статус-бейджи, .gallery-card (0.3)
+     8. INTERACTIVE MODULES  — version-notice, domain-route, ai-guide, kg-*, context-panel
+     9. RESPONSIVE           — @media
+     Полный рефактор не выполнялся — секции размечены поверх уже
+     рабочих стилей 0.1/0.2, чтобы не сломать текущую функциональность.
+     ============================================================ */
+
+  /* ===================== 1. TOKENS ===================== */
+  /* ============================================================
+     DESIGN TOKENS
+     Цвета унаследованы от графической системы Investment Memorandum
+     и Executive Knowledge Graph Architecture — единый бренд-язык
+     экосистемы Housemaster. Добавлен stewardship-green по brief.
+     ============================================================ */
+  :root{
+    --graphite-deep:   #14171A;
+    --graphite:        #20242A;
+    --graphite-soft:   #2B3038;
+    --paper:           #FBF8F2;
+    --paper-dim:       #F1ECE1;
+    --ink:             #1B1D20;
+    --ink-soft:        #4A4F57;
+    --line-on-dark:    rgba(248,245,239,0.14);
+    --line-on-light:   rgba(27,29,32,0.12);
+    --deep-blue:       #0E3358;
+    --sky-blue:        #3FA0D6;
+    --gold:            #D9A53C;
+    --gold-bright:     #E8B94E;
+    --stewardship-green: #54765C;
+    --danger:          #9B3B33;
+    --media-accent:    #6B5B95;
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Consolas, monospace;
+
+    --container: 1140px;
+    --radius: 3px;
+    --ease: cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ===================== 2. BASE ===================== */
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img,svg{ max-width:100%; display:block; }
+  a{ color: inherit; }
+
+  /* ===================== 3. LAYOUT ===================== */
+  .wrap{
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin: 0 0 18px;
+  }
+  .eyebrow::before{
+    content:"";
+    width: 22px; height:1px;
+    background: var(--gold);
+    display:inline-block;
+  }
+  .on-light .eyebrow{ color: var(--stewardship-green); }
+  .on-light .eyebrow::before{ background: var(--stewardship-green); }
+
+  h1,h2,h3,h4{
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin: 0 0 .5em;
+    letter-spacing: -.01em;
+  }
+  h2{ font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; }
+  h3{ font-size: clamp(19px, 2vw, 23px); line-height: 1.3; }
+  p{ margin: 0 0 1em; }
+  .lede{ font-size: clamp(17px,1.6vw,20px); color: var(--ink-soft); max-width: 640px; }
+
+  section{ position: relative; }
+  .pad{ padding: 96px 0; }
+  .pad-sm{ padding: 64px 0; }
+
+  .on-dark{ background: var(--graphite-deep); color: var(--paper); }
+  .on-dark .ink-soft, .on-dark p{ color: rgba(248,245,239,.72); }
+  .on-dark h2, .on-dark h3{ color: var(--paper); }
+  .on-graphite{ background: var(--graphite); color: var(--paper); }
+  .on-graphite p{ color: rgba(248,245,239,.72); }
+
+  .divider{
+    height:1px; width:100%;
+    background: linear-gradient(90deg, transparent, var(--line-on-light), transparent);
+  }
+  .on-dark .divider, .on-graphite .divider{
+    background: linear-gradient(90deg, transparent, var(--line-on-dark), transparent);
+  }
+
+  /* ===================== 4. NAV ===================== */
+  /* ---------- Sticky Nav ---------- */
+  header.site-nav{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(20,23,26,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line-on-dark);
+  }
+  .nav-inner{
+    max-width: var(--container);
+    margin:0 auto;
+    padding: 0 28px;
+    display:flex;
+    align-items:center;
+    gap: 28px;
+    height: 60px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar{ display:none; }
+  .brand{
+    font-family: var(--font-display);
+    color: var(--paper);
+    font-size: 17px;
+    letter-spacing: .01em;
+    white-space: nowrap;
+    flex-shrink:0;
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .brand .mark{ color: var(--gold); font-family: var(--font-mono); font-size:12px; letter-spacing:.1em; }
+  nav.links{ display:flex; gap:22px; white-space:nowrap; }
+  nav.links a{
+    color: rgba(248,245,239,.62);
+    text-decoration:none;
+    font-size: 13.5px;
+    letter-spacing: .02em;
+    padding: 4px 1px;
+    border-bottom: 1px solid transparent;
+    transition: color .2s var(--ease), border-color .2s var(--ease);
+  }
+  nav.links a:hover, nav.links a:focus-visible{ color: var(--paper); }
+  nav.links a.active{ color: var(--gold-bright); border-color: var(--gold-bright); }
+
+  :focus-visible{ outline: 2px solid var(--sky-blue); outline-offset: 2px; }
+
+  /* ===================== 5. BUTTONS ===================== */
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family: var(--font-body);
+    font-size: 14.5px; font-weight:600;
+    padding: 13px 22px;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    cursor:pointer;
+    text-decoration:none;
+    transition: transform .15s var(--ease), background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn-gold{ background: var(--gold); color: #1B1D20; }
+  .btn-gold:hover{ background: var(--gold-bright); }
+  .btn-ghost-dark{ border-color: rgba(248,245,239,.35); color: var(--paper); }
+  .btn-ghost-dark:hover{ border-color: var(--paper); background: rgba(248,245,239,.06); }
+  .btn-ghost-light{ border-color: rgba(27,29,32,.3); color: var(--ink); }
+  .btn-ghost-light:hover{ border-color: var(--ink); background: rgba(27,29,32,.04); }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:14px; margin-top: 32px; }
+  .btn[data-tip]{ position:relative; }
+
+  .tip{
+    font-size:12.5px; color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  .on-dark .tip{ color: rgba(248,245,239,.5); }
+
+  /* ===================== 6. CARDS & CONTENT SECTIONS ===================== */
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse 900px 500px at 18% -10%, rgba(63,160,214,.16), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 110%, rgba(217,165,60,.10), transparent 60%),
+      var(--graphite-deep);
+    padding: 108px 0 90px;
+    overflow:hidden;
+  }
+  .hero-grid{ display:grid; grid-template-columns: 1.15fr .85fr; gap:56px; align-items:center; }
+  .hero h1{
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1.08;
+    color: var(--paper);
+    max-width: 620px;
+  }
+  .hero .lede{ color: rgba(248,245,239,.72); max-width:560px; }
+  .trust-strip{
+    margin-top: 40px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing:.03em;
+    color: rgba(248,245,239,.48);
+    border-top: 1px solid var(--line-on-dark);
+    padding-top: 16px;
+    display:flex; flex-wrap:wrap; gap:6px 18px;
+  }
+
+  /* Signature element: blueprint house cross-section */
+  .blueprint{
+    background: linear-gradient(180deg, rgba(63,160,214,.06), rgba(63,160,214,.02));
+    border: 1px solid var(--line-on-dark);
+    border-radius: 6px;
+    padding: 18px;
+  }
+  .blueprint svg{ width:100%; height:auto; }
+  .blueprint-caption{
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing:.08em; text-transform:uppercase;
+    color: rgba(248,245,239,.4);
+    text-align:center; margin-top:10px;
+  }
+
+  /* ---------- Quickstart Rubricator (RU UX pass, MVP Build · Public Language Pass) ---------- */
+  .rubric-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:1px;
+    background: var(--line-on-light); border:1px solid var(--line-on-light); margin-top:40px;
+  }
+  .rubric-card{
+    background: var(--paper); padding:26px 24px; display:flex; flex-direction:column; gap:10px;
+    text-decoration:none; color:inherit;
+    transition: background .2s var(--ease), transform .15s var(--ease);
+  }
+  .rubric-card:hover{ background:#fff; transform: translateY(-2px); }
+  .rubric-card h4{ font-family:var(--font-display); font-size:17px; margin:0; }
+  .rubric-card p{ font-size:14px; color:var(--ink-soft); margin:0; }
+  .rubric-card .go{
+    font-family: var(--font-mono); font-size:12px; letter-spacing:.05em;
+    color: var(--stewardship-green); margin-top:auto; padding-top:10px;
+  }
+  @media (max-width: 880px){ .rubric-grid{ grid-template-columns: 1fr; } }
+
+  /* ---------- Charter ---------- */
+  .charter-grid{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line-on-light);
+    border: 1px solid var(--line-on-light);
+    margin-top: 48px;
+  }
+  .charter-card{
+    background: var(--paper);
+    padding: 28px 24px;
+    min-height: 168px;
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .charter-card .num{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--stewardship-green);
+    letter-spacing:.06em;
+  }
+  .charter-card p{ font-size: 15px; color: var(--ink); margin:0; }
+  .charter-card strong{ display:block; font-family:var(--font-display); font-size:17px; margin-bottom:4px; }
+  .charter-foot{ margin-top:28px; }
+
+  /* ---------- Journey ---------- */
+  .journey-rail{
+    display:grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 14px;
+    margin-top: 52px;
+    counter-reset: stage;
+  }
+  .stage{
+    position:relative;
+    padding-top: 22px;
+    border-top: 2px solid var(--line-on-dark);
+    transition: border-color .25s var(--ease);
+  }
+  .stage::before{
+    counter-increment: stage;
+    content: counter(stage, decimal-leading-zero);
+    position:absolute; top:-11px; left:0;
+    background: var(--graphite-deep);
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--gold);
+    padding-right: 8px;
+  }
+  .stage h4{ font-family:var(--font-body); font-weight:700; font-size:14.5px; color:var(--paper); margin:0 0 8px; }
+  .stage p{ font-size: 13px; color: rgba(248,245,239,.6); margin:0 0 12px; }
+  .stage a{ font-size:12.5px; color: var(--sky-blue); text-decoration:none; border-bottom:1px solid rgba(63,160,214,.4); }
+  .stage a:hover{ border-color: var(--sky-blue); }
+  .stage:hover{ border-top-color: var(--gold); }
+  .journey-return{
+    margin-top:28px; font-size:13px; color: rgba(248,245,239,.45); font-style:italic;
+  }
+
+  /* ---------- House Map ---------- */
+  .housemap-layout{
+    display:grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 48px; align-items:start;
+  }
+  .domain-grid{
+    display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;
+  }
+  .domain-card{
+    text-align:left;
+    background: var(--paper);
+    border: 1px solid var(--line-on-light);
+    padding: 16px 16px;
+    cursor:pointer;
+    font-family: var(--font-body);
+    transition: border-color .2s var(--ease), background .2s var(--ease), transform .15s var(--ease);
+    display:flex; align-items:center; gap:12px;
+  }
+  .domain-card:hover{ transform: translateY(-2px); border-color: var(--stewardship-green); }
+  .domain-card.active{
+    background: #fff;
+    border-color: var(--stewardship-green);
+    box-shadow: 0 0 0 1px var(--stewardship-green);
+  }
+  .domain-card .code{
+    font-family: var(--font-mono); font-size: 12px; font-weight:700;
+    color: var(--deep-blue);
+    background: var(--paper-dim);
+    border-radius:2px;
+    padding: 4px 7px;
+    flex-shrink:0;
+  }
+  .domain-card.active .code{ background: var(--stewardship-green); color:#fff; }
+  .domain-card .name{ font-size:14.5px; font-weight:600; }
+  .domain-card .name small{ display:block; font-weight:400; color:var(--ink-soft); font-size:12px; }
+
+  .domain-detail{
+    background: var(--graphite-deep); color: var(--paper);
+    border-radius: 6px; padding: 30px 28px; min-height: 320px;
+    position: sticky; top: 84px;
+  }
+  .domain-detail .code-big{
+    font-family: var(--font-mono); color: var(--gold); font-size:13px; letter-spacing:.08em;
+  }
+  .domain-detail h3{ color:var(--paper); margin-top:6px; }
+  .domain-detail dl{ margin: 18px 0 0; }
+  .domain-detail dt{
+    font-family: var(--font-mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase;
+    color: var(--sky-blue); margin-top:16px;
+  }
+  .domain-detail dd{ margin: 6px 0 0; font-size:14.5px; color: rgba(248,245,239,.82); }
+
+  .blueprint-marker{ cursor:pointer; }
+  .blueprint-marker circle{ transition: fill .2s var(--ease), r .2s var(--ease); }
+  .blueprint-marker.active circle{ fill: var(--gold); r:7; }
+  .blueprint-marker text{ font-family: var(--font-mono); pointer-events:none; }
+  .blueprint-marker:hover circle{ fill: var(--sky-blue); }
+
+  /* ---------- Symptom Navigator ---------- */
+  .symptom-buttons{
+    display:flex; flex-wrap:wrap; gap:10px; margin-top: 40px;
+  }
+  .symptom-btn{
+    background:#fff; border:1px solid var(--line-on-light);
+    padding: 13px 18px; border-radius: 999px;
+    font-size: 14px; cursor:pointer; font-family:var(--font-body);
+    transition: all .2s var(--ease);
+  }
+  .symptom-btn:hover{ border-color: var(--deep-blue); }
+  .symptom-btn.active{ background: var(--deep-blue); color:#fff; border-color:var(--deep-blue); }
+
+  .symptom-answer{
+    margin-top: 28px;
+    border: 1px solid var(--line-on-light);
+    border-left: 4px solid var(--stewardship-green);
+    background: #fff;
+    padding: 26px 28px;
+    display:none;
+  }
+  .symptom-answer.show{ display:block; animation: fadein .3s var(--ease); }
+  .symptom-answer.redflag{ border-left-color: var(--danger); }
+  @keyframes fadein{ from{opacity:0; transform: translateY(4px);} to{opacity:1; transform:none;} }
+  .sym-meta{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .pill{
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing:.05em;
+    padding: 4px 10px; border-radius: 999px; background: var(--paper-dim); color: var(--ink-soft);
+  }
+  .pill.l1{ background: rgba(84,118,92,.14); color: var(--stewardship-green); }
+  .pill.l2{ background: rgba(217,165,60,.16); color: #8a6212; }
+  .pill.l3{ background: rgba(155,59,51,.13); color: var(--danger); }
+  .symptom-answer h4{ font-family:var(--font-display); font-size:18px; margin:0 0 12px; }
+  .symptom-answer .safe-action{ font-weight:600; }
+  .symptom-answer .redflag-note{
+    margin-top:14px; padding:12px 14px; background: rgba(155,59,51,.07);
+    border:1px solid rgba(155,59,51,.25); font-size:13.5px; color: var(--danger);
+  }
+
+  /* ---------- Behavioral Loop ---------- */
+  .loop-chain{
+    display:flex; flex-wrap:wrap; gap:0; margin-top:48px;
+    border:1px solid var(--line-on-dark); border-radius:6px; overflow:hidden;
+  }
+  .loop-step{
+    flex:1 1 100px;
+    background: var(--graphite);
+    padding: 22px 14px;
+    border-right: 1px solid var(--line-on-dark);
+    text-align:center;
+  }
+  .loop-step:last-child{ border-right:none; background: var(--stewardship-green); }
+  .loop-step .n{ font-family:var(--font-mono); color: var(--gold); font-size:11px; display:block; margin-bottom:8px; }
+  .loop-step:last-child .n{ color: rgba(255,255,255,.8); }
+  .loop-step span.label{ font-size: 13px; color: var(--paper); font-weight:600; }
+  .loop-note{ margin-top:18px; font-size:13.5px; color: rgba(248,245,239,.55); }
+
+  /* ---------- Roles ---------- */
+  .role-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap:1px;
+    background: var(--line-on-light); border:1px solid var(--line-on-light); margin-top:48px;
+  }
+  .role-card{ background:var(--paper); padding:26px 22px; min-height:230px; display:flex; flex-direction:column; }
+  .role-card h4{ font-family:var(--font-display); font-size:18px; margin:0 0 14px; }
+  .role-card .row{ font-size:13px; margin-bottom:10px; }
+  .role-card .row b{ display:block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--stewardship-green); margin-bottom:3px; font-weight:600; }
+
+  /* ---------- Commons ---------- */
+  .commons-cycle{
+    display:flex; flex-wrap:wrap; gap:8px; margin-top:44px; align-items:center;
+  }
+  .cyc-node{
+    font-family: var(--font-mono); font-size:12.5px; letter-spacing:.02em;
+    padding: 9px 14px; border:1px solid rgba(248,245,239,.25); border-radius:999px; color: rgba(248,245,239,.85);
+  }
+  .cyc-arrow{ color: var(--gold); font-size:14px; }
+  .commons-cards, .academy-list, .media-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 36px;
+  }
+  .commons-card{
+    background: var(--graphite); border:1px solid var(--line-on-dark); padding:24px; border-radius:6px;
+  }
+  .commons-card h4{ color:var(--paper); font-size:16.5px; margin-bottom:10px; }
+  .commons-card p{ font-size:14px; margin:0; }
+  .commons-card .tag{ font-family:var(--font-mono); font-size:11px; color:var(--sky-blue); letter-spacing:.05em; }
+
+  /* ---------- Academy ---------- */
+  .academy-list{ grid-template-columns: repeat(2,1fr); }
+  .academy-item{
+    border:1px solid var(--line-on-light); background:#fff; padding:22px;
+    display:flex; gap:16px; align-items:flex-start;
+  }
+  .academy-item .ic{ font-family:var(--font-mono); color:var(--stewardship-green); font-size:13px; flex-shrink:0; padding-top:2px; }
+  .academy-item h4{ font-size:16px; margin:0 0 6px; }
+  .academy-item p{ font-size:13.5px; color:var(--ink-soft); margin:0; }
+
+  /* ---------- Media ---------- */
+  .media-flow{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin: 36px 0 8px;
+    font-family: var(--font-mono); font-size:13px; color: rgba(248,245,239,.7);
+  }
+  .media-flow .node{ border:1px solid rgba(248,245,239,.25); padding:8px 12px; border-radius:4px; }
+  .platform-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; }
+  .platform-chip{
+    font-size:13px; padding:8px 14px; border-radius:999px;
+    background: rgba(248,245,239,.06); border:1px solid rgba(248,245,239,.18); color: rgba(248,245,239,.85);
+  }
+
+  /* ---------- Partners ---------- */
+  .partner-strip{
+    display:flex; flex-wrap:wrap; gap: 14px; margin-top: 32px;
+  }
+  .partner-chip{
+    border: 1px solid var(--line-on-light); padding: 12px 18px; border-radius: 4px;
+    font-size: 13.5px; color: var(--ink-soft); background:#fff;
+  }
+
+  /* ---------- Final CTA ---------- */
+  .final-cta{
+    background: var(--graphite-deep);
+    padding: 100px 0 96px;
+    text-align:center;
+  }
+  .final-cta h2{ color: var(--paper); max-width: 720px; margin: 0 auto .3em; }
+  .final-cta .btn-row{ justify-content:center; margin-top:40px; }
+
+  footer{
+    background: var(--graphite-deep); color: rgba(248,245,239,.4);
+    padding: 36px 0 50px; font-size: 12.5px;
+    border-top: 1px solid var(--line-on-dark);
+  }
+  footer .wrap{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+
+  .reveal{ opacity:0; transform: translateY(14px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ===================== 7. COMPONENT GALLERY (0.3) ===================== */
+  /* ---------- Status badges ---------- */
+  .status-badge{
+    font-family: var(--font-mono); font-size: 10px; letter-spacing:.06em; text-transform:uppercase;
+    padding: 3px 9px; border-radius:999px; display:inline-block; border:1px solid transparent;
+  }
+  .status-badge.stable{        background: rgba(84,118,92,.14);  color: var(--stewardship-green); border-color: rgba(84,118,92,.35); }
+  .status-badge.prototype{     background: rgba(63,160,214,.14);  color: var(--sky-blue);          border-color: rgba(63,160,214,.35); }
+  .status-badge.placeholder{   background: rgba(74,79,87,.12);    color: var(--ink-soft);          border-color: rgba(74,79,87,.3); }
+  .status-badge.future-module{ background: rgba(217,165,60,.16);  color: #8a6212;                  border-color: rgba(217,165,60,.4); }
+  .status-badge.needs-review{  background: rgba(155,59,51,.13);   color: var(--danger);            border-color: rgba(155,59,51,.35); }
+  .on-dark .status-badge.placeholder, .on-graphite .status-badge.placeholder{ color: rgba(248,245,239,.55); }
+
+  /* ---------- Componentization chain (Ontology -> Component -> Interface -> Product) ---------- */
+  .chain-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin: 28px 0 8px;
+    font-family: var(--font-mono); font-size: 13px;
+  }
+  .chain-row .cs{ padding:8px 13px; border:1px solid var(--line-on-light); border-radius:4px; background:#fff; }
+  .chain-row .ar{ color: var(--gold); }
+  .map-list{
+    display:grid; grid-template-columns: repeat(2,1fr); gap:8px 28px; margin-top:24px;
+    font-size: 14px;
+  }
+  .map-list .map-item{ display:flex; align-items:baseline; gap:8px; border-bottom:1px solid var(--line-on-light); padding:8px 0; }
+  .map-list .map-item b{ font-weight:600; }
+  .map-list .map-item .arr{ color: var(--gold); }
+
+  /* ---------- Component Gallery grid ---------- */
+  .gallery-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; margin-top:36px;
+  }
+  .gallery-card{
+    background:#fff; border:1px solid var(--line-on-light); border-radius:6px;
+    padding:22px; display:flex; flex-direction:column; gap:9px;
+  }
+  .gallery-card .gc-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .gallery-card h4{ font-size:16px; margin:0; }
+  .gallery-card .gc-row{ font-size:13px; color: var(--ink-soft); }
+  .gallery-card .gc-row b{
+    display:block; font-family: var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+    color: var(--deep-blue); margin-bottom:2px; font-weight:600;
+  }
+  .gallery-card .gc-example{
+    font-size:13.5px; background: var(--paper-dim); padding:8px 10px; border-radius:3px; color: var(--ink);
+  }
+
+  /* ---------- Component Interaction Demo ---------- */
+  .demo-buttons{ display:flex; flex-wrap:wrap; gap:10px; margin-top:36px; }
+  .demo-btn{
+    background:#fff; border:1px solid var(--line-on-light); padding:11px 18px; border-radius:999px;
+    font-size:14px; cursor:pointer; font-family:var(--font-body);
+  }
+  .demo-btn:hover{ border-color: var(--deep-blue); }
+  .demo-btn.active{ background: var(--deep-blue); color:#fff; border-color:var(--deep-blue); }
+  .demo-answer{
+    margin-top:24px; display:none; background:#fff; border:1px solid var(--line-on-light);
+    border-left:4px solid var(--deep-blue); padding:24px 26px;
+  }
+  .demo-answer.show{ display:block; animation: fadein .3s var(--ease); }
+  .demo-chain{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:var(--font-mono); font-size:13.5px; }
+  .demo-chain .dc-step{ padding:7px 12px; border:1px solid var(--line-on-light); border-radius:4px; background: var(--paper-dim); }
+  .demo-chain .dc-arrow{ color: var(--gold); }
+
+  /* ---------- House Timeline ---------- */
+  .timeline{ margin-top: 30px; position:relative; padding-left:26px; border-left:2px solid var(--line-on-light); }
+  .timeline-item{ position:relative; padding-bottom:22px; }
+  .timeline-item:last-child{ padding-bottom:0; }
+  .timeline-item::before{
+    content:""; position:absolute; left:-32px; top:3px; width:11px; height:11px; border-radius:50%;
+    background: var(--gold); border:2px solid var(--paper);
+  }
+  .timeline-item .ty{ font-family:var(--font-mono); font-size:12.5px; color: var(--deep-blue); font-weight:700; }
+  .timeline-item p{ font-size:14.5px; margin:4px 0 0; color: var(--ink-soft); }
+
+  /* ===================== 8. INTERACTIVE MODULES ===================== */
+  /* ---------- Version / Prototype Notice (0.2) ---------- */
+  .version-notice{
+    background: var(--graphite);
+    border-bottom: 1px solid var(--line-on-dark);
+  }
+  .version-notice-inner{
+    display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px;
+    padding: 10px 28px;
+  }
+  .version-tag{
+    font-family: var(--font-mono); font-size: 11px; letter-spacing:.06em;
+    color: var(--gold-bright); flex-shrink:0;
+    border: 1px solid rgba(217,165,60,.4); border-radius: 999px; padding: 3px 10px;
+  }
+  .version-text{ font-size: 12.5px; color: rgba(248,245,239,.55); }
+
+  /* ---------- Card System (shared visual language, 0.2) ----------
+     Базовые модификаторы: цветной левый бордер + family-метка.
+     Используются на новых и существующих карточках без переписывания
+     их структуры — применяются как дополнительный класс. */
+  .knowledge-card, .case-card, .sop-card, .agent-card, .artifact-card, .media-card{
+    border-left: 3px solid var(--ink-soft);
+    position: relative;
+  }
+  .knowledge-card{ border-left-color: var(--sky-blue); }
+  .case-card{ border-left-color: var(--gold); }
+  .sop-card{ border-left-color: var(--stewardship-green); }
+  .agent-card{ border-left-color: var(--deep-blue); }
+  .artifact-card{ border-left-color: var(--ink-soft); }
+  .media-card{ border-left-color: var(--media-accent); }
+  .card-kind{
+    font-family: var(--font-mono); font-size: 10px; letter-spacing:.08em; text-transform:uppercase;
+    opacity:.7;
+  }
+
+  /* ---------- Domain Route (House Map detail, 0.2) ---------- */
+  .domain-route{ margin-top: 18px; }
+  .domain-route .route-label{
+    font-family: var(--font-mono); font-size: 11px; letter-spacing:.07em; text-transform:uppercase;
+    color: var(--sky-blue); display:block; margin-bottom: 10px;
+  }
+  .route-chain{ display:flex; flex-direction:column; gap:0; }
+  .route-step{
+    display:flex; align-items:flex-start; gap:10px;
+    padding: 7px 0;
+    border-left: 1px dashed rgba(248,245,239,.25);
+    margin-left: 5px; padding-left: 14px;
+    position:relative;
+  }
+  .route-step::before{
+    content:""; position:absolute; left:-4px; top:13px;
+    width:7px; height:7px; border-radius:50%;
+    background: var(--gold);
+  }
+  .route-step:last-child{ border-left-color: transparent; }
+  .route-step span{ font-size: 13px; color: rgba(248,245,239,.85); }
+  .route-step .rk{
+    font-family: var(--font-mono); font-size: 10px; color: var(--gold-bright);
+    flex-shrink:0; width:78px;
+  }
+  .related-symptoms{ margin-top: 20px; }
+  .related-symptoms .route-label{ color: var(--stewardship-green); }
+  .rel-sym-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .rel-sym-chip{
+    font-size: 12.5px; padding: 6px 12px; border-radius:999px;
+    background: rgba(248,245,239,.06); border:1px solid rgba(248,245,239,.22);
+    color: rgba(248,245,239,.85); cursor:pointer; font-family: var(--font-body);
+  }
+  .rel-sym-chip:hover{ border-color: var(--stewardship-green); }
+  .no-rel{ font-size: 13px; color: rgba(248,245,239,.4); font-style:italic; }
+  .crosslink-note{
+    margin-top:14px; font-size: 12.5px; color: var(--sky-blue);
+  }
+
+  /* ---------- AI Stewardship Guide (0.2) ---------- */
+  .ai-guide-grid{
+    display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-top:40px;
+  }
+  .ai-guide-btn{
+    text-align:left; background:#fff; border:1px solid var(--line-on-light);
+    padding: 16px 18px; cursor:pointer; font-family:var(--font-body); font-size:14.5px; font-weight:600;
+    border-radius: var(--radius); transition: border-color .2s var(--ease), transform .15s var(--ease);
+  }
+  .ai-guide-btn:hover{ transform: translateY(-2px); border-color: var(--deep-blue); }
+  .ai-guide-btn.active{ border-color: var(--deep-blue); box-shadow: 0 0 0 1px var(--deep-blue); }
+  .ai-guide-answer{
+    margin-top: 26px; display:none;
+    background: var(--paper-dim); border:1px solid var(--line-on-light);
+    padding: 26px 28px;
+  }
+  .ai-guide-answer.show{ display:block; animation: fadein .3s var(--ease); }
+  .ai-guide-answer h4{ font-family:var(--font-display); font-size:18px; margin:0 0 14px; }
+  .ai-guide-answer dl{ display:grid; grid-template-columns: 140px 1fr; gap:8px 16px; margin:0; }
+  .ai-guide-answer dt{ font-family:var(--font-mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--stewardship-green); padding-top:2px; }
+  .ai-guide-answer dd{ margin:0; font-size:14.5px; }
+  .ai-guide-disclaimer{ font-size:13px; color:var(--ink-soft); max-width:680px; margin-top:18px; }
+
+  /* ---------- Commons: What the Commons will contain (0.2) ---------- */
+  .commons-future-grid{
+    display:grid; grid-template-columns: repeat(3,1fr); gap:18px; margin-top:18px;
+  }
+  .future-card{
+    background: var(--graphite); border:1px solid var(--line-on-dark); border-radius:6px;
+    padding:22px; display:flex; flex-direction:column; gap:10px;
+  }
+  .future-card .status-tag{
+    font-family: var(--font-mono); font-size:10px; letter-spacing:.07em;
+    color: var(--gold-bright); border:1px solid rgba(217,165,60,.35); border-radius:999px;
+    padding:3px 9px; align-self:flex-start;
+  }
+  .future-card h4{ color:var(--paper); font-size:15.5px; margin:0; }
+  .future-card .example{ font-size:13px; color: rgba(248,245,239,.7); margin:0; }
+  .future-card .kg-update{ font-size:12px; color: var(--sky-blue); margin:0; }
+
+  /* ---------- Living Knowledge Graph Preview (0.2) ---------- */
+  .kg-grid{
+    display:grid; grid-template-columns: repeat(5, 1fr); gap:10px; margin-top:44px;
+  }
+  .kg-node{
+    background:#fff; border:1px solid var(--line-on-light); padding:16px 12px;
+    text-align:center; cursor:pointer; font-family:var(--font-body);
+    border-radius: var(--radius); transition: all .2s var(--ease);
+  }
+  .kg-node .kn-i{ font-family:var(--font-mono); font-size:10px; color:var(--ink-soft); display:block; margin-bottom:4px; }
+  .kg-node .kn-name{ font-size:14px; font-weight:700; }
+  .kg-node:hover{ border-color: var(--sky-blue); transform: translateY(-2px); }
+  .kg-node.active{ background: var(--deep-blue); border-color: var(--deep-blue); }
+  .kg-node.active .kn-name, .kg-node.active .kn-i{ color:#fff; }
+  .kg-detail{
+    margin-top: 26px; background: var(--paper-dim); border:1px solid var(--line-on-light);
+    padding: 26px 28px; display:none;
+  }
+  .kg-detail.show{ display:block; animation: fadein .3s var(--ease); }
+  .kg-detail h4{ font-family:var(--font-display); font-size:18px; margin:0 0 10px; }
+  .kg-detail .kg-row{ font-size:14px; margin-bottom:8px; }
+  .kg-detail .kg-row b{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--stewardship-green); display:block; margin-bottom:2px; font-weight:600; }
+  .kg-note{ margin-top:16px; font-size:13px; color:var(--ink-soft); }
+
+  /* ---------- Global Context Panel (0.3) ---------- */
+  .context-panel{
+    position: fixed; right: 18px; bottom: 18px; z-index: 60;
+    max-width: 360px;
+    background: var(--graphite-deep); color: var(--paper);
+    border: 1px solid rgba(217,165,60,.4);
+    border-radius: 6px;
+    padding: 14px 16px 14px 18px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.35);
+    transform: translateY(12px); opacity:0; pointer-events:none;
+    transition: opacity .25s var(--ease), transform .25s var(--ease);
+  }
+  .context-panel.show{ opacity:1; transform:none; pointer-events:auto; }
+  .context-panel .cp-label{
+    font-family: var(--font-mono); font-size:10px; letter-spacing:.07em; text-transform:uppercase;
+    color: var(--gold-bright); display:block; margin-bottom:6px;
+  }
+  .context-panel .cp-chain{ font-size: 13.5px; line-height:1.5; color: rgba(248,245,239,.92); padding-right:20px; }
+  .context-panel .cp-close{
+    position:absolute; top:8px; right:10px; background:none; border:none; color: rgba(248,245,239,.5);
+    font-size:16px; line-height:1; cursor:pointer; padding:2px;
+  }
+  .context-panel .cp-close:hover{ color: var(--paper); }
+  @media (max-width: 620px){
+    .context-panel{ left:14px; right:14px; bottom:14px; max-width:none; }
+  }
+
+  /* ===================== 9. RESPONSIVE ===================== */
+  /* ---------- Responsive ---------- */
+  @media (max-width: 980px){
+    .hero-grid{ grid-template-columns:1fr; gap:40px; }
+    .charter-grid{ grid-template-columns: repeat(2,1fr); }
+    .journey-rail{ grid-template-columns: repeat(4,1fr); }
+    .housemap-layout{ grid-template-columns:1fr; }
+    .domain-detail{ position:static; }
+    .role-grid{ grid-template-columns: repeat(2,1fr); }
+    .commons-cards, .media-grid{ grid-template-columns: repeat(2,1fr); }
+    .academy-list{ grid-template-columns: 1fr; }
+    .ai-guide-grid{ grid-template-columns: repeat(2,1fr); }
+    .commons-future-grid{ grid-template-columns: repeat(2,1fr); }
+    .kg-grid{ grid-template-columns: repeat(4,1fr); }
+    .gallery-grid{ grid-template-columns: repeat(2,1fr); }
+    .map-list{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 620px){
+    .pad{ padding:64px 0; }
+    .journey-rail{ grid-template-columns: repeat(2,1fr); }
+    .charter-grid{ grid-template-columns: 1fr; }
+    .domain-grid{ grid-template-columns: 1fr; }
+    .role-grid{ grid-template-columns: 1fr; }
+    .commons-cards, .media-grid{ grid-template-columns: 1fr; }
+    nav.links{ gap:16px; }
+    .ai-guide-grid{ grid-template-columns: 1fr; }
+    .commons-future-grid{ grid-template-columns: 1fr; }
+    .kg-grid{ grid-template-columns: repeat(2,1fr); }
+    .ai-guide-answer dl{ grid-template-columns: 1fr; }
+    .version-notice-inner{ flex-direction:column; align-items:flex-start; }
+    .gallery-grid{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= STICKY NAVIGATION ================= -->
+<header class="site-nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="mark">№0</span> Housemaster</div>
+    <nav class="links" id="primary-nav" aria-label="Разделы портала">
+      <a href="#stewardship">Забота о доме</a>
+      <a href="#journey">Путь</a>
+      <a href="#house">Дом</a>
+      <a href="#symptoms">Симптомы</a>
+      <a href="#ai-guide">Помощник</a>
+      <a href="#roles">Роли</a>
+      <a href="#commons">Опыт домов</a>
+      <a href="#graph">Карта знаний</a>
+      <a href="#roof-mvp">Кровля</a>
+      <a href="#library">Для команды</a>
+      <a href="#academy">Обучение</a>
+      <a href="#media">Видео</a>
+      <a href="#partners">Партнёры</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= VERSION / PROTOTYPE NOTICE ================= -->
+<div class="version-notice" role="note">
+  <div class="wrap version-notice-inner">
+    <span class="version-tag">MVP · Кровля подключена как первый раздел знаний</span>
+    <span class="version-text">Это минимальная рабочая сборка. Она показывает первую связку между порталом, разделом знаний по кровле и будущими материалами для жителей. Часть блоков пока демонстрационные.</span>
+  </div>
+</div>
+
+<!-- ================= 1. HERO ================= -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Портал заботы о доме · Семей, Абайская область</p>
+      <h1>Ваш дом — часть капитала вашей семьи.</h1>
+      <p class="lede">Каждый день дом стареет. Вопрос не в том, потребуется ли ему внимание.
+      Вопрос в том, станет ли это внимание своевременным, совместным и профессиональным.</p>
+      <p class="lede" style="margin-top:18px;">Housemaster помогает жителям, председателям ОСИ и хаузмастерам
+      понимать дом, видеть ранние признаки проблем и действовать по понятному стандарту.</p>
+      <div class="btn-row">
+        <a href="#house" class="btn btn-gold">Начать понимать свой дом</a>
+        <a href="#symptoms" class="btn btn-ghost-dark">Найти симптом</a>
+        <a href="#stewardship" class="btn btn-ghost-dark">Прочитать Хартию</a>
+      </div>
+      <div class="trust-strip">
+        <span>Стандарт разработан совместно с КГУ «Семей Тәртіп»</span>
+        <span>·</span>
+        <span>Применяется в системе ОСИ Республики Казахстан</span>
+        <span>·</span>
+        <span>Учитывает климат региона: от −35°C до +40°C</span>
+      </div>
+    </div>
+
+    <!-- SIGNATURE ELEMENT: blueprint cross-section of a typical MKD, synced with House Map below -->
+    <div class="blueprint" aria-hidden="false">
+      <svg id="hero-blueprint" viewBox="0 0 480 560" role="img" aria-label="Схема многоквартирного дома в разрезе с десятью инженерными доменами">
+        <defs>
+          <pattern id="gridPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M20 0 L0 0 0 20" fill="none" stroke="rgba(248,245,239,0.05)" stroke-width="1"/>
+          </pattern>
+          <pattern id="hatchEarth" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(248,245,239,0.18)" stroke-width="1.4"/>
+          </pattern>
+          <pattern id="hatchRoof" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="7" stroke="rgba(217,165,60,0.5)" stroke-width="1.2"/>
+          </pattern>
+          <pattern id="hatchShaft" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(63,160,214,0.3)" stroke-width="1"/>
+          </pattern>
+        </defs>
+
+        <rect x="0" y="0" width="480" height="560" fill="url(#gridPattern)"/>
+
+        <!-- Ground line -->
+        <line x1="40" y1="380" x2="440" y2="380" stroke="rgba(248,245,239,0.35)" stroke-width="1.4"/>
+        <!-- Yard paving dashes either side -->
+        <g stroke="rgba(248,245,239,0.22)" stroke-width="1" stroke-dasharray="3 5">
+          <line x1="46" y1="380" x2="146" y2="380"/>
+          <line x1="334" y1="380" x2="434" y2="380"/>
+        </g>
+        <!-- Yard tree icon -->
+        <g stroke="rgba(84,118,92,0.7)" fill="rgba(84,118,92,0.35)">
+          <line x1="92" y1="380" x2="92" y2="356" stroke-width="2"/>
+          <circle cx="92" cy="348" r="11"/>
+        </g>
+
+        <!-- Basement block -->
+        <rect x="150" y="380" width="180" height="68" fill="url(#hatchEarth)" stroke="rgba(248,245,239,0.25)"/>
+        <!-- ITP box -->
+        <rect x="168" y="398" width="26" height="22" fill="none" stroke="rgba(248,245,239,0.45)"/>
+        <!-- Sewer pipe -->
+        <line x1="285" y1="398" x2="320" y2="420" stroke="rgba(248,245,239,0.45)" stroke-width="2"/>
+
+        <!-- Building shell -->
+        <rect x="150" y="80" width="180" height="300" fill="rgba(248,245,239,0.025)" stroke="rgba(248,245,239,0.4)" stroke-width="1.4"/>
+        <!-- Floor lines -->
+        <g stroke="rgba(248,245,239,0.14)" stroke-width="1">
+          <line x1="150" y1="117.5" x2="330" y2="117.5"/>
+          <line x1="150" y1="155"   x2="330" y2="155"/>
+          <line x1="150" y1="192.5" x2="330" y2="192.5"/>
+          <line x1="150" y1="230"   x2="330" y2="230"/>
+          <line x1="150" y1="267.5" x2="330" y2="267.5"/>
+          <line x1="150" y1="305"   x2="330" y2="305"/>
+          <line x1="150" y1="342.5" x2="330" y2="342.5"/>
+        </g>
+        <!-- Windows -->
+        <g fill="rgba(63,160,214,0.16)" stroke="rgba(63,160,214,0.4)" stroke-width="1">
+          <rect x="168" y="92"  width="24" height="18"/><rect x="222" y="92"  width="24" height="18"/>
+          <rect x="168" y="129" width="24" height="18"/><rect x="222" y="129" width="24" height="18"/>
+          <rect x="168" y="167" width="24" height="18"/><rect x="222" y="167" width="24" height="18"/>
+          <rect x="168" y="204" width="24" height="18"/><rect x="222" y="204" width="24" height="18"/>
+          <rect x="168" y="242" width="24" height="18"/><rect x="222" y="242" width="24" height="18"/>
+          <rect x="168" y="279" width="24" height="18"/><rect x="222" y="279" width="24" height="18"/>
+          <rect x="168" y="317" width="24" height="18"/><rect x="222" y="317" width="24" height="18"/>
+          <rect x="168" y="354" width="24" height="18"/><rect x="222" y="354" width="24" height="18"/>
+        </g>
+        <!-- Entrance door -->
+        <rect x="210" y="362" width="36" height="18" fill="rgba(217,165,60,0.25)" stroke="rgba(217,165,60,0.6)"/>
+
+        <!-- Lift shaft -->
+        <rect x="296" y="80" width="28" height="300" fill="url(#hatchShaft)" stroke="rgba(63,160,214,0.4)"/>
+
+        <!-- Roof / parapet -->
+        <rect x="140" y="64" width="200" height="16" fill="url(#hatchRoof)" stroke="rgba(217,165,60,0.55)"/>
+
+        <!-- ===== Markers (10 domains) — synced with .domain-card via data-domain ===== -->
+        <g class="blueprint-marker" data-domain="ROOF" tabindex="0" role="button" aria-label="Кровля">
+          <line x1="240" y1="64" x2="240" y2="40" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="240" cy="64" r="5" fill="var(--gold)"/>
+          <text x="240" y="26" text-anchor="middle" fill="#D9A53C" font-size="11">ROOF</text>
+        </g>
+        <g class="blueprint-marker" data-domain="FACD" tabindex="0" role="button" aria-label="Фасад">
+          <line x1="150" y1="140" x2="78" y2="140" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="150" cy="140" r="5" fill="var(--sky-blue)"/>
+          <text x="72" y="144" text-anchor="end" fill="#3FA0D6" font-size="11">FACD</text>
+        </g>
+        <g class="blueprint-marker" data-domain="ELEC" tabindex="0" role="button" aria-label="Электроснабжение">
+          <line x1="168" y1="230" x2="78" y2="252" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="168" cy="230" r="5" fill="var(--sky-blue)"/>
+          <text x="72" y="256" text-anchor="end" fill="#3FA0D6" font-size="11">ELEC</text>
+        </g>
+        <g class="blueprint-marker" data-domain="WATR" tabindex="0" role="button" aria-label="Водоснабжение">
+          <line x1="200" y1="305" x2="78" y2="330" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="200" cy="305" r="5" fill="var(--sky-blue)"/>
+          <text x="72" y="334" text-anchor="end" fill="#3FA0D6" font-size="11">WATR</text>
+        </g>
+        <g class="blueprint-marker" data-domain="LIFT" tabindex="0" role="button" aria-label="Лифт">
+          <line x1="310" y1="280" x2="404" y2="280" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="310" cy="280" r="5" fill="var(--sky-blue)"/>
+          <text x="410" y="284" text-anchor="start" fill="#3FA0D6" font-size="11">LIFT</text>
+        </g>
+        <g class="blueprint-marker" data-domain="CMNA" tabindex="0" role="button" aria-label="Подъезд / места общего пользования">
+          <line x1="246" y1="370" x2="404" y2="200" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="246" cy="370" r="5" fill="var(--stewardship-green)"/>
+          <text x="410" y="204" text-anchor="start" fill="#54765C" font-size="11">CMNA</text>
+        </g>
+        <g class="blueprint-marker" data-domain="YARD" tabindex="0" role="button" aria-label="Двор">
+          <line x1="92" y1="378" x2="60" y2="495" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="92" cy="378" r="5" fill="var(--stewardship-green)"/>
+          <text x="60" y="508" text-anchor="middle" fill="#54765C" font-size="11">YARD</text>
+        </g>
+        <g class="blueprint-marker" data-domain="HEAT" tabindex="0" role="button" aria-label="Отопление">
+          <line x1="181" y1="409" x2="150" y2="495" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="181" cy="409" r="5" fill="var(--gold)"/>
+          <text x="150" y="508" text-anchor="middle" fill="#D9A53C" font-size="11">HEAT</text>
+        </g>
+        <g class="blueprint-marker" data-domain="BASE" tabindex="0" role="button" aria-label="Подвал">
+          <line x1="240" y1="425" x2="245" y2="495" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="240" cy="425" r="5" fill="var(--gold)"/>
+          <text x="245" y="508" text-anchor="middle" fill="#D9A53C" font-size="11">BASE</text>
+        </g>
+        <g class="blueprint-marker" data-domain="SEWR" tabindex="0" role="button" aria-label="Канализация">
+          <line x1="300" y1="409" x2="340" y2="495" stroke="rgba(248,245,239,0.4)"/>
+          <circle cx="300" cy="409" r="5" fill="var(--gold)"/>
+          <text x="340" y="508" text-anchor="middle" fill="#D9A53C" font-size="11">SEWR</text>
+        </g>
+      </svg>
+      <p class="blueprint-caption">Дом в разрезе · 10 инженерных доменов · нажмите карточку домена ниже, чтобы увидеть на схеме</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="background:rgba(248,245,239,.14)"></div>
+
+<!-- ================= 1B. QUICK START / RUBRICATOR (RU UX pass, MVP Build · Public Language Pass) =================
+     Не новый архитектурный слой — компактный гид входа из шести карточек,
+     каждая ведёт на уже существующий якорь портала. -->
+<section class="pad-sm on-light" id="quickstart" aria-label="Быстрый вход — выбор ситуации">
+  <div class="wrap">
+    <p class="eyebrow">С чего начать</p>
+    <h2 style="font-size:clamp(22px,2.6vw,30px);">Что вы хотите сделать?</h2>
+    <p class="lede" style="margin-top:4px;">Выберите ближайшую ситуацию — портал откроет нужный раздел.</p>
+
+    <div class="rubric-grid" role="list" aria-label="Сценарии входа">
+      <a class="rubric-card" href="#symptoms" role="listitem">
+        <h4>Я заметил проблему</h4>
+        <p>Пятно, запах, холод, вода, искрение или трещина.</p>
+        <span class="go">Перейти →</span>
+      </a>
+      <a class="rubric-card" href="#house" role="listitem">
+        <h4>Хочу понять свой дом</h4>
+        <p>Посмотреть, из каких инженерных систем состоит многоквартирный дом.</p>
+        <span class="go">Перейти →</span>
+      </a>
+      <a class="rubric-card" href="#roles" role="listitem">
+        <h4>Я председатель ОСИ</h4>
+        <p>Понять роли, документы, акты и подготовку решений.</p>
+        <span class="go">Перейти →</span>
+      </a>
+      <a class="rubric-card" href="#ai-guide" role="listitem">
+        <h4>Готовим дом к зиме</h4>
+        <p>Понять, какие системы нужно проверить до холодов.</p>
+        <span class="go">Перейти →</span>
+      </a>
+      <a class="rubric-card" href="#roof-mvp" role="listitem">
+        <h4>Проверить кровлю</h4>
+        <p>Пятна на потолке, наледь, воронки, протечки и первые безопасные действия.</p>
+        <span class="go">Перейти →</span>
+      </a>
+      <a class="rubric-card" href="#academy" role="listitem">
+        <h4>Пройти короткий урок</h4>
+        <p>Начать с простого объяснения без технического языка.</p>
+        <span class="go">Перейти →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="background:rgba(27,29,32,.12)"></div>
+
+<!-- ================= 2. CHARTER PREVIEW ================= -->
+<section class="pad on-light" id="stewardship">
+  <div class="wrap">
+    <p class="eyebrow">Хартия заботы о доме</p>
+    <h2>Культура ответственного попечения о доме</h2>
+    <p class="lede">House Stewardship — культура ответственного попечения о многоквартирном доме
+    как общем семейном, общественном и национальном капитале. Ниже — восемь из пятнадцати принципов Хартии,
+    на которых строится вся система Housemaster.</p>
+
+    <div class="charter-grid">
+      <div class="charter-card reveal">
+        <span class="num">01</span>
+        <p><strong>Дом — не только стены.</strong>Это инженерные системы, история ремонтов, документы и соседские отношения.</p>
+      </div>
+      <div class="charter-card reveal">
+        <span class="num">02</span>
+        <p><strong>Дом — общая ответственность.</strong>Общее имущество принадлежит каждому собственнику в равной доле ответственности.</p>
+      </div>
+      <div class="charter-card reveal">
+        <span class="num">04</span>
+        <p><strong>Документ важнее спора.</strong>Акт осмотра и история заявок защищают всех участников лучше любого спора.</p>
+      </div>
+      <div class="charter-card reveal">
+        <span class="num">05</span>
+        <p><strong>Профилактика лучше аварии.</strong>Плановый осмотр кровли стоит в десятки раз дешевле, чем ликвидация протечки.</p>
+      </div>
+      <div class="charter-card reveal">
+        <span class="num">06</span>
+        <p><strong>Капитальный ремонт — это капитализация.</strong>Деньги, вложенные в дом, не расходуются — они переходят в стоимость квартиры.</p>
+      </div>
+      <div class="charter-card reveal">
+        <span class="num">08</span>
+        <p><strong>Безопасность не обсуждается.</strong>Там, где есть угроза жизни, действие предшествует анализу.</p>
+      </div>
+      <div class="charter-card reveal">
+        <span class="num">14</span>
+        <p><strong>Каждое поколение передаёт дом лучше, чем получило.</strong>Успех измеряется состоянием дома через тридцать лет.</p>
+      </div>
+      <div class="charter-card reveal">
+        <span class="num">15</span>
+        <p><strong>Культура важнее технологии.</strong>Если инструмент перестаёт служить культуре House Stewardship — меняется инструмент.</p>
+      </div>
+    </div>
+    <p class="tip charter-foot">Полная Хартия содержит пятнадцать принципов и служит проверочным инструментом для каждого материала портала. <!-- PLACEHOLDER: ссылка на полный текст Хартии --></p>
+  </div>
+</section>
+
+<!-- ================= 3. PORTAL JOURNEY ================= -->
+<section class="pad on-dark" id="journey">
+  <div class="wrap">
+    <p class="eyebrow">Путь жителя</p>
+    <h2>Путешествие, а не меню</h2>
+    <p class="lede" style="color:rgba(248,245,239,.72)">Посетитель проходит не разделы сайта, а последовательность состояний понимания —
+    и может вернуться на любой следующий этап жизни своего дома.</p>
+
+    <div class="journey-rail">
+      <div class="stage reveal"><h4>Понять дом</h4><p>Что такое МКД и из чего он состоит.</p><a href="#stewardship">открыть →</a></div>
+      <div class="stage reveal"><h4>Исследовать</h4><p>Как устроены системы моего дома.</p><a href="#house">открыть →</a></div>
+      <div class="stage reveal"><h4>Понять симптомы</h4><p>Что значит трещина, протечка, запах.</p><a href="#symptoms">открыть →</a></div>
+      <div class="stage reveal"><h4>Научиться</h4><p>Что делать при первых признаках.</p><a href="#academy">открыть →</a></div>
+      <div class="stage reveal"><h4>Осмотреть</h4><p>Как провести или заказать осмотр.</p><a href="#roles">открыть →</a></div>
+      <div class="stage reveal"><h4>Управлять решениями</h4><p>Как принять решение вместе с ОСИ.</p><a href="#roles">открыть →</a></div>
+      <div class="stage reveal"><h4>Сохранить стоимость</h4><p>Капитальный ремонт как капитализация.</p><a href="#commons">открыть →</a></div>
+      <div class="stage reveal"><h4>Передать поколению</h4><p>Дом лучше, чем приняли.</p><a href="#partners">открыть →</a></div>
+    </div>
+    <p class="journey-return">↺ возврат на первый этап с новым вопросом — в любой момент жизни дома</p>
+  </div>
+</section>
+
+<!-- ================= 4. HOUSE MAP ================= -->
+<section class="pad on-light" id="house" aria-label="Дом как система — карта доменов">
+  <div class="wrap">
+    <p class="eyebrow">Дом как система</p>
+    <h2>Дом состоит не из одной системы, а из десяти</h2>
+    <p class="lede">У каждого домена — свой код, своя зона ответственности и Domain Route: путь от типового симптома
+    до записи в графе знаний. Выберите домен, чтобы увидеть его на схеме выше и пройти его маршрут целиком.</p>
+
+    <div class="housemap-layout">
+      <div class="domain-grid" id="domain-grid" role="group" aria-label="Десять доменов дома">
+        <!-- 10 domain cards; data-domain matches blueprint markers above -->
+        <button class="domain-card" data-domain="ROOF" aria-expanded="false" aria-controls="domain-detail"><span class="code">ROOF</span><span class="name">Кровля<small>покрытие, воронки, парапет</small></span></button>
+        <button class="domain-card" data-domain="BASE" aria-expanded="false" aria-controls="domain-detail"><span class="code">BASE</span><span class="name">Подвал<small>вводы труб, фундамент, дренаж</small></span></button>
+        <button class="domain-card" data-domain="HEAT" aria-expanded="false" aria-controls="domain-detail"><span class="code">HEAT</span><span class="name">Отопление<small>ИТП, стояки, балансировка</small></span></button>
+        <button class="domain-card" data-domain="WATR" aria-expanded="false" aria-controls="domain-detail"><span class="code">WATR</span><span class="name">Водоснабжение<small>ХВС, ГВС, давление</small></span></button>
+        <button class="domain-card" data-domain="SEWR" aria-expanded="false" aria-controls="domain-detail"><span class="code">SEWR</span><span class="name">Канализация<small>стояки, лежаки, запахи</small></span></button>
+        <button class="domain-card" data-domain="ELEC" aria-expanded="false" aria-controls="domain-detail"><span class="code">ELEC</span><span class="name">Электроснабжение<small>ВРУ, щитки, освещение</small></span></button>
+        <button class="domain-card" data-domain="FACD" aria-expanded="false" aria-controls="domain-detail"><span class="code">FACD</span><span class="name">Фасад<small>швы, облицовка, окна МОП</small></span></button>
+        <button class="domain-card" data-domain="CMNA" aria-expanded="false" aria-controls="domain-detail"><span class="code">CMNA</span><span class="name">Подъезд / МОП<small>двери, доводчики, окна</small></span></button>
+        <button class="domain-card" data-domain="LIFT" aria-expanded="false" aria-controls="domain-detail"><span class="code">LIFT</span><span class="name">Лифт<small>ТО, освидетельствование</small></span></button>
+        <button class="domain-card" data-domain="YARD" aria-expanded="false" aria-controls="domain-detail"><span class="code">YARD</span><span class="name">Двор<small>асфальт, освещение, площадки</small></span></button>
+      </div>
+
+      <aside class="domain-detail" id="domain-detail" aria-live="polite">
+        <span class="code-big">Выберите домен</span>
+        <h3>Дом начинается с системы, а не со стен</h3>
+        <p style="font-size:14.5px;color:rgba(248,245,239,.75)">Нажмите на любую карточку слева или на отметку на схеме —
+        здесь появится не только описание, но и Domain Route: симптом → чек-лист → акт → SOP → кейс → обсуждение в Commons → AI Agent.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. SYMPTOM NAVIGATOR ================= -->
+<section class="pad on-graphite" id="symptoms" aria-label="Диагностический навигатор по симптомам">
+  <div class="wrap">
+    <p class="eyebrow">Навигатор по симптомам</p>
+    <h2>Что вы заметили?</h2>
+    <p class="lede" style="color:rgba(248,245,239,.72)">Симптом — это не диагноз. Выберите то, что вы видите —
+    мы поможем понять, что это значит, какой первый шаг безопасен, и откроем соответствующий домен в карте дома выше.</p>
+
+    <div class="symptom-buttons" id="symptom-buttons" role="group" aria-label="Признаки, которые можно выбрать">
+      <button class="symptom-btn" data-symptom="ceiling" aria-expanded="false" aria-controls="symptom-answer">Пятно на потолке</button>
+      <button class="symptom-btn" data-symptom="cold" aria-expanded="false" aria-controls="symptom-answer">Холодная квартира</button>
+      <button class="symptom-btn" data-symptom="smell" aria-expanded="false" aria-controls="symptom-answer">Запах в подвале</button>
+      <button class="symptom-btn" data-symptom="spark" aria-expanded="false" aria-controls="symptom-answer">Искрение в щитке</button>
+      <button class="symptom-btn" data-symptom="water" aria-expanded="false" aria-controls="symptom-answer">Вода в подвале</button>
+      <button class="symptom-btn" data-symptom="crack" aria-expanded="false" aria-controls="symptom-answer">Трещина на фасаде</button>
+    </div>
+
+    <div class="symptom-answer" id="symptom-answer" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ================= 5B. AI STEWARDSHIP GUIDE ================= -->
+<section class="pad on-light" id="ai-guide" aria-label="Помощник по дому">
+  <div class="wrap">
+    <p class="eyebrow">Помощник по дому</p>
+    <h2>Не chat. Не chatbot. Guide.</h2>
+    <p class="lede">AI Assistant не принимает решения за человека. Он помогает понять домен, сформулировать вопрос,
+    найти безопасный следующий шаг и подготовиться к разговору с хаузмастером или ОСИ. Выберите, что вы хотите сделать.</p>
+
+    <div class="ai-guide-grid" id="ai-guide-grid" role="group" aria-label="Намерения, которые понимает guide">
+      <button class="ai-guide-btn" data-intent="understand" aria-expanded="false" aria-controls="ai-guide-answer">Понять дом</button>
+      <button class="ai-guide-btn" data-intent="symptom" aria-expanded="false" aria-controls="ai-guide-answer">Найти симптом</button>
+      <button class="ai-guide-btn" data-intent="winter" aria-expanded="false" aria-controls="ai-guide-answer">Подготовить дом к зиме</button>
+      <button class="ai-guide-btn" data-intent="roof" aria-expanded="false" aria-controls="ai-guide-answer">Изучить кровлю</button>
+      <button class="ai-guide-btn" data-intent="meeting" aria-expanded="false" aria-controls="ai-guide-answer">Подготовить собрание ОСИ</button>
+      <button class="ai-guide-btn" data-intent="lesson" aria-expanded="false" aria-controls="ai-guide-answer">Пройти мини-урок</button>
+    </div>
+
+    <div class="ai-guide-answer agent-card" id="ai-guide-answer" aria-live="polite"></div>
+    <p class="ai-guide-disclaimer">Помощник по дому в этой версии — навигационная демонстрация, а не работающий ассистент: ответы заранее заданы для шести намерений и показывают форму будущего интерфейса. <!-- PLACEHOLDER --></p>
+  </div>
+</section>
+
+<!-- ================= 6. BEHAVIORAL LOOP ================= -->
+<section class="pad on-light">
+  <div class="wrap">
+    <p class="eyebrow">Цепочка действий</p>
+    <h2>Один цикл для всех ролей дома</h2>
+    <p class="lede">Житель, заметивший пятно на потолке, и хаузмастер, выполняющий сезонный осмотр,
+    проходят одну и ту же последовательность — различается только исполнитель и инструмент.</p>
+
+    <div class="loop-chain">
+      <div class="loop-step"><span class="n">01</span><span class="label">Заметить</span></div>
+      <div class="loop-step"><span class="n">02</span><span class="label">Понять</span></div>
+      <div class="loop-step"><span class="n">03</span><span class="label">Осмотреть</span></div>
+      <div class="loop-step"><span class="n">04</span><span class="label">Зафиксировать</span></div>
+      <div class="loop-step"><span class="n">05</span><span class="label">Принять решение</span></div>
+      <div class="loop-step"><span class="n">06</span><span class="label">Действовать</span></div>
+      <div class="loop-step"><span class="n">07</span><span class="label">Проверить</span></div>
+      <div class="loop-step"><span class="n">08</span><span class="label">Научиться</span></div>
+      <div class="loop-step"><span class="n">09</span><span class="label">Сохранить стоимость</span></div>
+    </div>
+    <p class="tip" style="margin-top:18px;">После последнего шага цикл возвращается к первому — сохранённая стоимость становится частью того, что замечают и понимают в следующий раз.</p>
+  </div>
+</section>
+
+<!-- ================= 7. ROLE CARDS ================= -->
+<section class="pad on-dark" id="roles">
+  <div class="wrap">
+    <p class="eyebrow">Кто отвечает за дом</p>
+    <h2>У дома много участников. У каждого — своя роль</h2>
+    <p class="lede" style="color:rgba(248,245,239,.72)">Роли не создают иерархию власти между жителями — они различаются глубиной участия и зоной компетенции.</p>
+
+    <div class="role-grid">
+      <div class="role-card reveal">
+        <h4>Житель</h4>
+        <div class="row"><b>Видит</b>Диагностический навигатор, карту дома, статус своих обращений</div>
+        <div class="row"><b>Делает</b>Сообщает о симптоме, прикладывает фото, посещает собрания</div>
+        <div class="row"><b>Вклад</b>Первый сигнал — без него цепочка не начинается</div>
+      </div>
+      <div class="role-card reveal">
+        <h4>Председатель ОСИ</h4>
+        <div class="row"><b>Видит</b>Финансовые решения, договоры, историю дома целиком</div>
+        <div class="row"><b>Делает</b>Утверждает CAPEX, подписывает акты, представляет дом</div>
+        <div class="row"><b>Вклад</b>Превращает техническое заключение в обязывающее решение</div>
+      </div>
+      <div class="role-card reveal">
+        <h4>Хаузмастер</h4>
+        <div class="row"><b>Видит</b>Чек-лист осмотра, историю дефектов, маршрут проверки</div>
+        <div class="row"><b>Делает</b>Осматривает, классифицирует дефект, составляет акт</div>
+        <div class="row"><b>Вклад</b>Превращает наблюдение в верифицированный факт</div>
+      </div>
+      <div class="role-card reveal">
+        <h4>Сервисная организация</h4>
+        <div class="row"><b>Видит</b>Портфель домов, SLA, нагрузку хаузмастеров</div>
+        <div class="row"><b>Делает</b>Обучает, аккредитует, контролирует качество работы</div>
+        <div class="row"><b>Вклад</b>Делает стандарт воспроизводимым на масштабе</div>
+      </div>
+      <div class="role-card reveal">
+        <h4>Подрядчик</h4>
+        <div class="row"><b>Видит</b>Техническое задание на устранение дефекта</div>
+        <div class="row"><b>Делает</b>Выполняет ремонт, даёт гарантийные обязательства</div>
+        <div class="row"><b>Вклад</b>Замыкает цепочку от решения до факта работ</div>
+      </div>
+      <div class="role-card reveal">
+        <h4>Жилищная инспекция / акимат</h4>
+        <div class="row"><b>Видит</b>Регуляторные показатели, агрегаты по домам района</div>
+        <div class="row"><b>Делает</b>Содействует в рамках компетенции, не подменяя ОСИ</div>
+        <div class="row"><b>Вклад</b>Институциональная легитимность стандарта</div>
+      </div>
+      <div class="role-card reveal">
+        <h4>AI Assistant</h4>
+        <div class="row"><b>Видит</b>Граф знаний в пределах прав запрашивающей роли</div>
+        <div class="row"><b>Делает</b>Подсказывает домен по симптому, считает риск</div>
+        <div class="row"><b>Вклад</b>Не решает за человека — даёт фору во времени</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. COMMONS PREVIEW ================= -->
+<section class="pad on-graphite" id="commons">
+  <div class="wrap">
+    <p class="eyebrow">Опыт домов</p>
+    <h2>Пространство, где опыт домов становится знанием</h2>
+    <p class="lede" style="color:rgba(248,245,239,.72)">Commons — не форум, а Knowledge Engine: цикл, в котором
+    разовый случай конкретного дома проходит проверку и становится частью стандарта для всех домов.</p>
+
+    <div class="commons-cycle" aria-label="Цикл Commons">
+      <span class="cyc-node">Case</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Discussion</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Evidence</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Peer Review</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Validated Practice</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">SOP Update</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Knowledge Graph</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">New Behavior</span>
+    </div>
+
+    <div class="commons-cards">
+      <div class="commons-card case-card reveal">
+        <span class="tag">PLACEHOLDER</span>
+        <h4>Истории домов</h4>
+        <p>Неидентифицирующие истории конкретных домов, прошедших путь от запущенного состояния к системной заботе.</p>
+      </div>
+      <div class="commons-card sop-card reveal">
+        <span class="tag">PLACEHOLDER</span>
+        <h4>Разборы кейсов</h4>
+        <p>Разбор конкретного дефекта или решения хаузмастера — что было замечено, как проверено, что в итоге вошло в стандарт.</p>
+      </div>
+      <div class="commons-card agent-card reveal">
+        <span class="tag">PLACEHOLDER</span>
+        <h4>AI Roundtable</h4>
+        <p>Структурированное обсуждение спорного случая с участием AI Assistant как помощника, а не арбитра.</p>
+      </div>
+    </div>
+
+    <div class="divider" style="margin:56px 0 40px; background:rgba(248,245,239,.14)"></div>
+
+    <p class="eyebrow">Что появится в разделе «Опыт домов»</p>
+    <h3 style="color:var(--paper); font-size:21px; margin-bottom:8px;">Шесть будущих модулей — уже на своих местах</h3>
+    <p style="font-size:14.5px;color:rgba(248,245,239,.65); max-width:640px;">Ни один из модулей ниже не работает в этой версии.
+    Каждый показывает статус, пример содержимого и то, как именно он обновит граф знаний, когда появится.</p>
+
+    <div class="commons-future-grid" role="list" aria-label="Будущие модули Commons">
+      <div class="future-card case-card reveal" role="listitem">
+        <span class="status-tag">PLACEHOLDER</span>
+        <h4>Latest Cases</h4>
+        <p class="example">Пример: «Протечка кровли после снеготаяния» — Evidence приложено, ожидает expert review.</p>
+        <p class="kg-update">→ может стать SOP Update и узлом Case в графе знаний</p>
+      </div>
+      <div class="future-card knowledge-card reveal" role="listitem">
+        <span class="status-tag">PLACEHOLDER</span>
+        <h4>Latest Discussions</h4>
+        <p class="example">Пример: обсуждение, считать ли трещину шва L1 или L2 при повторном появлении за сезон.</p>
+        <p class="kg-update">→ уточняет порог Severity в Knowledge Graph</p>
+      </div>
+      <div class="future-card media-card reveal" role="listitem">
+        <span class="status-tag">FUTURE MODULE</span>
+        <h4>Latest Videos</h4>
+        <p class="example">Пример: короткий разбор «как отличить L1-трещину от L3-угрозы» для Media Factory.</p>
+        <p class="kg-update">→ ссылается на узел Symptom / Defect графа</p>
+      </div>
+      <div class="future-card sop-card reveal" role="listitem">
+        <span class="status-tag">PLACEHOLDER</span>
+        <h4>Latest SOP Updates</h4>
+        <p class="example">Пример: уточнённый маршрут осмотра ИТП после серии повторных недогревов в одном районе.</p>
+        <p class="kg-update">→ версионирует узел SOP, на который ссылаются Act-записи</p>
+      </div>
+      <div class="future-card knowledge-card reveal" role="listitem">
+        <span class="status-tag">FUTURE MODULE</span>
+        <h4>Latest Research Notes</h4>
+        <p class="example">Пример: заметка о климатической нагрузке на кровли региона — вход для будущего Risk Engine.</p>
+        <p class="kg-update">→ обогащает узлы Condition и Risk контекстными данными</p>
+      </div>
+      <div class="future-card agent-card reveal" role="listitem">
+        <span class="status-tag">FUTURE MODULE</span>
+        <h4>Latest AI Roundtables</h4>
+        <p class="example">Пример: структурированный разбор спорного кейса с участием Roof Agent и Senior Hausmaster.</p>
+        <p class="kg-update">→ формирует Validated Practice перед SOP Update</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 9. ACADEMY PREVIEW ================= -->
+<section class="pad on-light" id="academy">
+  <div class="wrap">
+    <p class="eyebrow">Обучение</p>
+    <h2>Чем больше вы понимаете дом — тем меньше в нём неожиданностей</h2>
+    <p class="lede">Academy переводит интерес в компетенцию — от первого мини-урока для жителя до подготовки сертифицированного хаузмастера.</p>
+
+    <div class="academy-list">
+      <div class="academy-item reveal"><span class="ic">01</span><div><h4>Короткие уроки</h4><p>Микрообучение по одному домену или одному действию — без регистрации, без обещания готового курса.</p></div></div>
+      <div class="academy-item reveal"><span class="ic">02</span><div><h4>Симуляторы осмотра</h4><p>Учебные сценарии «что вы увидите на месте» для будущих хаузмастеров. <!-- PLACEHOLDER --></p></div></div>
+      <div class="academy-item reveal"><span class="ic">03</span><div><h4>Подготовка хаузмастеров</h4><p>Трек компетенций от House Explorer до Senior Hausmaster, с подтверждением на каждом шаге.</p></div></div>
+      <div class="academy-item reveal"><span class="ic">04</span><div><h4>Трек для жителей</h4><p>Базовое понимание дома: что общее, что личное, что считается симптомом.</p></div></div>
+      <div class="academy-item reveal"><span class="ic">05</span><div><h4>Трек для молодёжи</h4><p>Раннее знакомство с культурой House Stewardship — игровые и образовательные форматы. <!-- PLACEHOLDER --></p></div></div>
+      <div class="academy-item reveal"><span class="ic">06</span><div><h4>Подготовка к собранию ОСИ</h4><p>Короткий модуль для совета дома перед обсуждением капитального ремонта.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10. MEDIA FACTORY PREVIEW ================= -->
+<section class="pad on-dark" id="media">
+  <div class="wrap">
+    <p class="eyebrow">Видео и памятки</p>
+    <h2>Знание, которое возвращается вопросом</h2>
+    <p class="lede" style="color:rgba(248,245,239,.72)">Knowledge Graph питает короткие форматы для разных платформ;
+    вопросы, которые там возникают, возвращаются в Commons и снова уточняют граф знаний.</p>
+
+    <div class="media-flow">
+      <span class="node">Knowledge Graph</span><span>→</span>
+      <span class="node">Reels / Shorts / YouTube</span><span>→</span>
+      <span class="node">Вопросы аудитории</span><span>→</span>
+      <span class="node">Commons</span><span>→</span>
+      <span class="node">Knowledge Graph</span>
+    </div>
+
+    <div class="platform-row">
+      <span class="platform-chip">TikTok / Shorts — microlearning</span>
+      <span class="platform-chip">YouTube — разборы кейсов</span>
+      <span class="platform-chip">Instagram — визуальные карточки</span>
+      <span class="platform-chip">Facebook — обсуждения для старшего поколения</span>
+      <span class="platform-chip">VK / OK — региональные сообщества</span>
+      <span class="platform-chip">X — профессиональный дискурс</span>
+    </div>
+    <p class="tip" style="margin-top:24px;">Раздел показывает направление развития, а не готовую медиа-сетку. <!-- PLACEHOLDER --></p>
+  </div>
+</section>
+
+<!-- ================= 11. PARTNER / SEMEY CONTEXT ================= -->
+<section class="pad on-light" id="partners">
+  <div class="wrap">
+    <p class="eyebrow">Региональный контекст</p>
+    <h2>Первая практическая рамка формируется в Семее и Абайской области</h2>
+    <p class="lede">Это не временный этап перед «масштабированием», а самостоятельно ценная работа на конкретной территории,
+    чей опыт может — и должен — делиться без принуждения к копированию для других городов.</p>
+
+    <div class="partner-strip">
+      <span class="partner-chip">ОСИ Семея и Абайской области</span>
+      <span class="partner-chip">Жители-собственники</span>
+      <span class="partner-chip">Хаузмастеры</span>
+      <span class="partner-chip">КГУ «Семей Тәртіп»</span>
+      <span class="partner-chip">Сервисные организации</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11B. LIVING KNOWLEDGE GRAPH PREVIEW ================= -->
+<section class="pad on-light" id="graph" aria-label="Карта знаний">
+  <div class="wrap">
+    <p class="eyebrow">Карта знаний</p>
+    <h2>Не база данных. Демонстрация связи.</h2>
+    <p class="lede">Это не настоящий граф знаний — это визуальная демонстрация того, как связаны тринадцать сущностей,
+    через которые проходит любой дефект дома, от здания целиком до его финансового следа. Нажмите на узел.</p>
+
+    <div class="kg-grid" id="kg-grid" role="group" aria-label="Тринадцать узлов графа знаний">
+      <button class="kg-node knowledge-card" data-node="building" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">01</span><span class="kn-name">Дом <small style="opacity:.55;font-weight:400;">(Building)</small></span></button>
+      <button class="kg-node knowledge-card" data-node="domain" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">02</span><span class="kn-name">Система дома <small style="opacity:.55;font-weight:400;">(Domain)</small></span></button>
+      <button class="kg-node knowledge-card" data-node="system" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">03</span><span class="kn-name">Подсистема <small style="opacity:.55;font-weight:400;">(System)</small></span></button>
+      <button class="kg-node knowledge-card" data-node="component" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">04</span><span class="kn-name">Элемент <small style="opacity:.55;font-weight:400;">(Component)</small></span></button>
+      <button class="kg-node knowledge-card" data-node="condition" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">05</span><span class="kn-name">Состояние <small style="opacity:.55;font-weight:400;">(Condition)</small></span></button>
+      <button class="kg-node case-card" data-node="symptom" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">06</span><span class="kn-name">Симптом <small style="opacity:.55;font-weight:400;">(Symptom)</small></span></button>
+      <button class="kg-node case-card" data-node="defect" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">07</span><span class="kn-name">Дефект <small style="opacity:.55;font-weight:400;">(Defect)</small></span></button>
+      <button class="kg-node artifact-card" data-node="inspection" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">08</span><span class="kn-name">Осмотр <small style="opacity:.55;font-weight:400;">(Inspection)</small></span></button>
+      <button class="kg-node artifact-card" data-node="evidence" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">09</span><span class="kn-name">Подтверждение <small style="opacity:.55;font-weight:400;">(Evidence)</small></span></button>
+      <button class="kg-node artifact-card" data-node="act" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">10</span><span class="kn-name">Акт <small style="opacity:.55;font-weight:400;">(Act)</small></span></button>
+      <button class="kg-node sop-card" data-node="risk" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">11</span><span class="kn-name">Риск <small style="opacity:.55;font-weight:400;">(Risk)</small></span></button>
+      <button class="kg-node sop-card" data-node="capex" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">12</span><span class="kn-name">Капитальное решение <small style="opacity:.55;font-weight:400;">(CAPEX)</small></span></button>
+      <button class="kg-node agent-card" data-node="value" aria-expanded="false" aria-controls="kg-detail"><span class="kn-i">13</span><span class="kn-name">Стоимость <small style="opacity:.55;font-weight:400;">(Value)</small></span></button>
+    </div>
+
+    <div class="kg-detail" id="kg-detail" aria-live="polite"></div>
+    <p class="kg-note">Дом → Система → Элемент → Симптом → Дефект → Осмотр → Фото/замер → Акт → Риск → Решение → Стоимость — один и тот же путь для любого дефекта, независимо от домена.
+    <!-- Полная техническая цепочка: Building → Domain → System → Component → Condition → Symptom → Defect → Inspection → Evidence → Act → Risk → CAPEX → Value --></p>
+  </div>
+</section>
+
+<!-- ================= 11B2. ROOF MVP KNOWLEDGE LOOP ================= -->
+<!-- MVP-блок: связывает Portal, ROOF Knowledge Corpus и контент-конвейер.
+     Не новый архитектурный слой — статическая демонстрация уже описанных
+     сущностей (Domain, Defect, Severity, SOP, Media) из существующей
+     онтологии и из HOUSEMASTER_ROOF_KNOWLEDGE_CORPUS_V1.0.md. -->
+<section class="pad on-dark" id="roof-mvp" aria-label="Кровля — рабочий цикл знаний">
+  <div class="wrap">
+
+    <!-- ---- First Canonical Corpus ---- -->
+    <p class="eyebrow">Первый раздел знаний</p>
+    <h2>ROOF Knowledge Corpus v1.0 — Reference Canonical Corpus №001</h2>
+    <p class="lede" style="color:rgba(248,245,239,.72)">ROOF Knowledge Corpus v1.0 — первый производственный корпус знаний Housemaster
+    и эталонный шаблон для всех последующих доменов.</p>
+
+    <div class="chain-row" aria-hidden="true">
+      <span class="cs">Домен: ROOF</span><span class="ar">·</span>
+      <span class="cs">Статус: <span class="status-badge stable" style="vertical-align:1px;">ГОТОВО К ИСПОЛЬЗОВАНИЮ</span></span>
+    </div>
+    <p style="font-size:14px;color:rgba(248,245,239,.65); max-width:680px; margin-top:14px;">
+    Роль: эталон для HEAT, BASE, WATR, SEWR, ELEC, FACD, CMNA, LIFT, YARD — каждый следующий доменный корпус
+    строится по тому же шаблону, пока практика не докажет необходимость отклонения (см. Controlled Evolution Note ниже).</p>
+
+    <div class="btn-row">
+      <a href="#roof-units" class="btn btn-ghost-dark">Открыть карточки знаний по кровле</a>
+      <a href="#media-pack" class="btn btn-ghost-dark">Открыть набор материалов</a>
+      <a href="#corpus-template" class="btn btn-ghost-dark">Открыть Шаблон раздела знаний</a>
+    </div>
+
+    <div class="divider" style="margin:52px 0 8px; background:rgba(248,245,239,.14)"></div>
+
+    <!-- ---- Corpus Template Preview ---- -->
+    <p class="eyebrow" id="corpus-template" style="margin-top:40px;">Шаблон раздела знаний</p>
+    <h3 style="color:var(--paper); font-size:21px; margin-bottom:8px;">18 разделов — единый шаблон для любого домена</h3>
+    <p style="font-size:14.5px;color:rgba(248,245,239,.65); max-width:680px;">Все следующие доменные корпуса должны строиться по этой структуре,
+    если практика не докажет необходимость отклонения.</p>
+
+    <div class="map-list">
+      <div class="map-item"><b>1.</b><span class="arr">·</span> Обзор домена</div>
+      <div class="map-item"><b>2.</b><span class="arr">·</span> Границы домена</div>
+      <div class="map-item"><b>3.</b><span class="arr">·</span> Системы</div>
+      <div class="map-item"><b>4.</b><span class="arr">·</span> Компоненты</div>
+      <div class="map-item"><b>5.</b><span class="arr">·</span> Типичные симптомы</div>
+      <div class="map-item"><b>6.</b><span class="arr">·</span> Типичные дефекты</div>
+      <div class="map-item"><b>7.</b><span class="arr">·</span> Чек-лист осмотра</div>
+      <div class="map-item"><b>8.</b><span class="arr">·</span> Подтверждение (фото / замер)</div>
+      <div class="map-item"><b>9.</b><span class="arr">·</span> Акт осмотра</div>
+      <div class="map-item"><b>10.</b><span class="arr">·</span> SOP</div>
+      <div class="map-item"><b>11.</b><span class="arr">·</span> Безопасность</div>
+      <div class="map-item"><b>12.</b><span class="arr">·</span> Частые ошибки</div>
+      <div class="map-item"><b>13.</b><span class="arr">·</span> Сигналы к капремонту</div>
+      <div class="map-item"><b>14.</b><span class="arr">·</span> Обучение</div>
+      <div class="map-item"><b>15.</b><span class="arr">·</span> Видео и памятки</div>
+      <div class="map-item"><b>16.</b><span class="arr">·</span> Помощник</div>
+      <div class="map-item"><b>17.</b><span class="arr">·</span> Хранилище знаний</div>
+      <div class="map-item"><b>18.</b><span class="arr">·</span> Связь с картой знаний</div>
+    </div>
+
+    <div class="divider" style="margin:52px 0 8px; background:rgba(248,245,239,.14)"></div>
+
+    <!-- ---- ROOF MVP Knowledge Units ---- -->
+    <p class="eyebrow" id="roof-units" style="margin-top:40px;">Карточки знаний по кровле</p>
+    <h3 style="color:var(--paper); font-size:21px; margin-bottom:8px;">10 Knowledge Units — от симптома до источника в Corpus</h3>
+    <p style="font-size:14.5px;color:rgba(248,245,239,.65); max-width:680px;">Каждый Unit — это одна связка симптом → вероятный дефект → severity → безопасное действие → раздел Corpus → статус для медиа.</p>
+
+    <div class="gallery-grid" role="list" aria-label="ROOF Knowledge Units 001–010">
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-001</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Пятно на потолке верхнего этажа</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-001 / ROOF-L2-007</p>
+        <p class="gc-example">Первый безопасный шаг: фото + сообщение хаузмастеру / ОСИ</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 8, 10</p>
+        <span class="status-badge stable">Готово для ролика</span>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-002</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Наледь и сосульки</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-003</p>
+        <p class="gc-example">Первый безопасный шаг: не сбивать самостоятельно, сообщить хаузмастеру / ОСИ</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 11</p>
+        <span class="status-badge stable">Готово для ролика</span>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-003</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Стоячая вода на кровле</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-005</p>
+        <p class="gc-example">Первый безопасный шаг: фото спустя 48 часов после осадков, сообщить хаузмастеру</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 8</p>
+        <span class="status-badge stable">Готово для ролика</span>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-004</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Засор воронки</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-004</p>
+        <p class="gc-example">Первый безопасный шаг: сообщить хаузмастеру, не прочищать самостоятельно</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 10</p>
+        <span class="status-badge stable">Готово для ролика</span>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-005</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Разрыв рулонного покрытия</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-002</p>
+        <p class="gc-example">Первый безопасный шаг: фото повреждённого участка с предметом-масштабом</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 8</p>
+        <span class="status-badge stable">Готово для ролика</span>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-006</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Мокрый чердак</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-006</p>
+        <p class="gc-example">Первый безопасный шаг: сообщить о влажном утеплителе, нужна инструментальная проверка</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 8</p>
+        <span class="status-badge stable">Готово для ролика</span>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-007</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Нарушение примыкания</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-007</p>
+        <p class="gc-example">Первый безопасный шаг: фото примыкания и точки протечки внутри помещения</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 9</p>
+        <span class="status-badge prototype">В работе</span>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-008</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Повреждённое ограждение</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-008</p>
+        <p class="gc-example">Первый безопасный шаг: не приближаться к повреждённому участку, сообщить хаузмастеру</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 11</p>
+        <span class="status-badge prototype">В работе</span>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-009</h4><span class="pill l2">L2 · требует внимания</span></div>
+        <p class="gc-row"><b>Симптом</b>Неисправный люк</p>
+        <p class="gc-row"><b>Возможная причина</b>ROOF-L2-009</p>
+        <p class="gc-example">Первый безопасный шаг: не пользоваться люком, сообщить ОСИ</p>
+        <p class="gc-row"><b>Источник</b>Sections 5, 6, 10</p>
+        <span class="status-badge placeholder">Будет позже</span>
+      </div>
+      <div class="gallery-card sop-card reveal" role="listitem">
+        <div class="gc-head"><h4>KU-ROOF-010</h4><span class="status-badge future-module">Сигнал к капитальному решению</span></div>
+        <p class="gc-row"><b>Симптом</b>Повторная протечка как CAPEX-сигнал</p>
+        <p class="gc-row"><b>Возможная причина</b>Risk → CAPEX (3+ повтора одного кода за сезон)</p>
+        <p class="gc-example">Первый безопасный шаг: собрать историю находок по компоненту, инициировать Capital Quest</p>
+        <p class="gc-row"><b>Источник</b>Sections 9, 13</p>
+        <span class="status-badge placeholder">Будет позже</span>
+      </div>
+    </div>
+
+    <div class="divider" style="margin:52px 0 8px; background:rgba(248,245,239,.14)"></div>
+
+    <!-- ---- ROOF Media MVP Pack 001 ---- -->
+    <p class="eyebrow" id="media-pack" style="margin-top:40px;">Первый набор материалов по кровле</p>
+    <h3 style="color:var(--paper); font-size:21px; margin-bottom:8px;">Из 10 Knowledge Units рождается output pack</h3>
+    <p style="font-size:14.5px;color:rgba(248,245,239,.65); max-width:680px;">Структура output-файлов конвейера (без полного медиаплана — только форма пакета):</p>
+
+    <div class="platform-row">
+      <span class="platform-chip">ROOF_KNOWLEDGE_UNITS_001_010.md</span>
+      <span class="platform-chip">ROOF_SHORTS_SCRIPTS_001_010.md</span>
+      <span class="platform-chip">ROOF_VISUAL_PROMPTS_001_010.md</span>
+      <span class="platform-chip">ROOF_SOCIAL_CAPTIONS_001_010.md</span>
+      <span class="platform-chip">ROOF_YOUTUBE_OUTLINES_001_010.md</span>
+    </div>
+
+    <div class="commons-cards" style="margin-top:32px;">
+      <div class="future-card media-card reveal">
+        <span class="status-tag">KU-ROOF-001</span>
+        <h4>Пятно на потолке</h4>
+        <p class="example"><b>Сценарий:</b> «Пятно на потолке — это симптом, не диагноз. Сфотографируйте и сообщите хаузмастеру — без самостоятельного вскрытия потолка».</p>
+        <p class="example"><b>Визуальная подсказка:</b> спокойный интерьерный кадр потолка с локальным влажным пятном, мягкий дневной свет.</p>
+        <p class="kg-update"><b>Подпись:</b> «Пятно после снега или дождя? Сфотографируйте и сообщите хаузмастеру — дальше разберёмся по стандарту».</p>
+      </div>
+      <div class="future-card media-card reveal">
+        <span class="status-tag">KU-ROOF-002</span>
+        <h4>Наледь и сосульки</h4>
+        <p class="example"><b>Сценарий:</b> «Не сбивайте сосульки самостоятельно — это работа на высоте. Сообщите хаузмастеру или ОСИ».</p>
+        <p class="example"><b>Визуальная подсказка:</b> карниз дома с наледью зимой, нейтральный городской фон, без людей в опасной зоне.</p>
+        <p class="kg-update"><b>Подпись:</b> «Сосульки — не украшение, а сигнал. Не сбивайте сами: сообщите хаузмастеру».</p>
+      </div>
+      <div class="future-card media-card reveal">
+        <span class="status-tag">KU-ROOF-003</span>
+        <h4>Стоячая вода на кровле</h4>
+        <p class="example"><b>Сценарий:</b> «Вода должна уходить с кровли за 48 часов. Если не уходит — это уже дефект, не погода».</p>
+        <p class="example"><b>Визуальная подсказка:</b> плоская кровля сверху, локальная стоячая вода, нейтральный технический кадр.</p>
+        <p class="kg-update"><b>Подпись:</b> «48 часов — порог. Дольше — повод для осмотра, а не для ожидания».</p>
+      </div>
+    </div>
+    <p class="ai-guide-disclaimer" style="color:rgba(248,245,239,.5);">Остальные 7 unit пока без примера сценария — это демо, не пропуск. <!-- PLACEHOLDER --></p>
+
+    <div class="divider" style="margin:52px 0 8px; background:rgba(248,245,239,.14)"></div>
+
+    <!-- ---- MVP Working Loop ---- -->
+    <p class="eyebrow" style="margin-top:40px;">Рабочий цикл</p>
+    <h3 style="color:var(--paper); font-size:21px; margin-bottom:8px;">Один рабочий цикл, не новый архитектурный слой</h3>
+
+    <div class="commons-cycle" aria-label="Рабочий цикл">
+      <span class="cyc-node">Раздел знаний ROOF</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Единица знаний</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Карточка портала</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Сценарий</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Визуальная подсказка</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Короткое видео</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Комментарий / вопрос</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Опыт домов</span><span class="cyc-arrow">→</span>
+      <span class="cyc-node">Хранилище знаний</span>
+    </div>
+
+    <div class="divider" style="margin:52px 0 8px; background:rgba(248,245,239,.14)"></div>
+
+    <!-- ---- Controlled Evolution Note ---- -->
+    <p class="eyebrow" style="margin-top:40px;">Как развивается портал</p>
+    <p style="font-size:14.5px;color:rgba(248,245,239,.72); max-width:680px;">Новые модули не создаются без практического подтверждения.
+    Если MVP покажет пробел — он будет обработан через Evolution Loop, а не немедленной правкой архитектуры.</p>
+
+    <div class="chain-row" aria-hidden="true" style="margin-top:20px;">
+      <span class="cs">Пилот</span><span class="ar">→</span>
+      <span class="cs">Наблюдение</span><span class="ar">→</span>
+      <span class="cs">Пробел</span><span class="ar">→</span>
+      <span class="cs">Минимальное расширение</span><span class="ar">→</span>
+      <span class="cs">Пилот</span><span class="ar">→</span>
+      <span class="cs">Проверка</span>
+    </div>
+    <p class="tip" style="margin-top:14px;">См. <code>HOUSEMASTER_EVOLUTION_PRINCIPLE.md</code> — этот блок не вводит новое правило, а напоминает уже зафиксированное.</p>
+
+  </div>
+</section>
+
+<!-- ================= 11C. HOUSEMASTER INTERFACE LIBRARY ================= -->
+<section class="pad on-graphite" id="library" aria-label="Служебная библиотека интерфейса">
+  <div class="wrap">
+    <p class="eyebrow">Служебная библиотека интерфейса</p>
+    <p class="version-tag" style="margin-bottom:14px;display:inline-block;">Служебный раздел для команды проекта</p>
+    <h2>Портал — это первая сборка из компонентов</h2>
+    <p class="lede" style="color:rgba(248,245,239,.72)">Те же компоненты позже будут использоваться в PWA, Academy, Commons,
+    Media Factory и AI Agent Interface. Ниже — не финальная дизайн-система, а первая попытка увидеть её на одной странице.</p>
+
+    <!-- Componentization philosophy -->
+    <div class="chain-row" aria-hidden="true">
+      <span class="cs">Ontology</span><span class="ar">→</span>
+      <span class="cs">Component</span><span class="ar">→</span>
+      <span class="cs">Interface</span><span class="ar">→</span>
+      <span class="cs">Product</span>
+    </div>
+    <p style="font-size:14px;color:rgba(248,245,239,.6); max-width:680px;">Каждая сущность онтологии Housemaster становится переиспользуемым компонентом интерфейса,
+    а не уникальным куском вёрстки для одной страницы:</p>
+    <div class="map-list">
+      <div class="map-item"><b>Domain</b><span class="arr">→</span> Domain Card</div>
+      <div class="map-item"><b>Symptom</b><span class="arr">→</span> Symptom Card</div>
+      <div class="map-item"><b>Evidence</b><span class="arr">→</span> Evidence Card</div>
+      <div class="map-item"><b>Act</b><span class="arr">→</span> Artifact Card</div>
+      <div class="map-item"><b>SOP</b><span class="arr">→</span> SOP Card</div>
+      <div class="map-item"><b>Case</b><span class="arr">→</span> Case Card</div>
+      <div class="map-item"><b>AI Agent</b><span class="arr">→</span> Agent Card</div>
+      <div class="map-item"><b>Media</b><span class="arr">→</span> Media Card</div>
+      <div class="map-item"><b>Building</b><span class="arr">→</span> House Card</div>
+      <div class="map-item"><b>CAPEX</b><span class="arr">→</span> Value Card</div>
+    </div>
+
+    <div class="divider" style="margin:48px 0 8px; background:rgba(248,245,239,.14)"></div>
+
+    <!-- Component Gallery -->
+    <p class="eyebrow" style="margin-top:40px;">Компоненты интерфейса</p>
+    <h3 style="color:var(--paper); font-size:21px; margin-bottom:8px;">Двенадцать компонентов, найденных в уже работающем прототипе</h3>
+    <p style="font-size:14.5px;color:rgba(248,245,239,.65); max-width:680px;">У каждого компонента — источник в онтологии, текущий статус
+    и то, где он уже используется (или будет использоваться) в продуктах Housemaster.</p>
+
+    <div class="gallery-grid" role="list" aria-label="Галерея компонентов">
+      <div class="gallery-card knowledge-card reveal" role="listitem">
+        <div class="gc-head"><h4>1. House Card</h4><span class="status-badge placeholder">PLACEHOLDER</span></div>
+        <p class="gc-row"><b>Ontology source</b>Building</p>
+        <p class="gc-row"><b>Used in</b>Portal · PWA · Academy · Investment / Board Portal</p>
+        <p class="gc-example">Дом 1974 г.п. · 10 доменов под наблюдением · Building Health: — (placeholder)</p>
+        <p class="gc-row"><b>Future reuse</b>плитка Regional Observatory dashboard</p>
+      </div>
+      <div class="gallery-card knowledge-card reveal" role="listitem">
+        <div class="gc-head"><h4>2. Domain Card</h4><span class="status-badge stable">STABLE</span></div>
+        <p class="gc-row"><b>Ontology source</b>Domain</p>
+        <p class="gc-row"><b>Used in</b>Portal · PWA · Academy</p>
+        <p class="gc-example">ROOF · Кровля · Domain Route из 7 шагов</p>
+        <p class="gc-row"><b>Future reuse</b>выбор маршрута осмотра в PWA</p>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>3. Symptom Card</h4><span class="status-badge prototype">PROTOTYPE</span></div>
+        <p class="gc-row"><b>Ontology source</b>Symptom</p>
+        <p class="gc-row"><b>Used in</b>Portal · PWA · Academy · Media</p>
+        <p class="gc-example">Пятно на потолке → ROOF / L2</p>
+        <p class="gc-row"><b>Future reuse</b>создание Claim жителем в PWA</p>
+      </div>
+      <div class="gallery-card artifact-card reveal" role="listitem">
+        <div class="gc-head"><h4>4. Checklist Card</h4><span class="status-badge placeholder">PLACEHOLDER</span></div>
+        <p class="gc-row"><b>Ontology source</b>Inspection (Checklist)</p>
+        <p class="gc-row"><b>Used in</b>PWA · Academy</p>
+        <p class="gc-example">Чек-лист осмотра кровли · 8 пунктов</p>
+        <p class="gc-row"><b>Future reuse</b>пошаговый flow осмотра в PWA</p>
+      </div>
+      <div class="gallery-card artifact-card reveal" role="listitem">
+        <div class="gc-head"><h4>5. Evidence Card</h4><span class="status-badge placeholder">PLACEHOLDER</span></div>
+        <p class="gc-row"><b>Ontology source</b>Evidence</p>
+        <p class="gc-row"><b>Used in</b>PWA · Commons</p>
+        <p class="gc-example">Фото протечки · 14.03.2026 · Evidence Confidence Level: высокий</p>
+        <p class="gc-row"><b>Future reuse</b>вложение к Case Card в Commons</p>
+      </div>
+      <div class="gallery-card artifact-card reveal" role="listitem">
+        <div class="gc-head"><h4>6. Act Card</h4><span class="status-badge placeholder">PLACEHOLDER</span></div>
+        <p class="gc-row"><b>Ontology source</b>Act</p>
+        <p class="gc-row"><b>Used in</b>Portal · PWA · Investment / Board Portal</p>
+        <p class="gc-example">Акт осмотра кровли №118 · статус: подписан</p>
+        <p class="gc-row"><b>Future reuse</b>событие в House Timeline</p>
+      </div>
+      <div class="gallery-card sop-card reveal" role="listitem">
+        <div class="gc-head"><h4>7. SOP Card</h4><span class="status-badge prototype">PROTOTYPE</span></div>
+        <p class="gc-row"><b>Ontology source</b>SOP</p>
+        <p class="gc-row"><b>Used in</b>Academy · Commons · PWA</p>
+        <p class="gc-example">SOP сезонного осмотра кровли · кто выполняет: Hausmaster</p>
+        <p class="gc-row"><b>Future reuse</b>источник урока Academy</p>
+      </div>
+      <div class="gallery-card case-card reveal" role="listitem">
+        <div class="gc-head"><h4>8. Case Card</h4><span class="status-badge placeholder">PLACEHOLDER</span></div>
+        <p class="gc-row"><b>Ontology source</b>Case</p>
+        <p class="gc-row"><b>Used in</b>Commons · Media Factory</p>
+        <p class="gc-example">Кейс: протечка после снеготаяния · статус: ожидает expert review</p>
+        <p class="gc-row"><b>Future reuse</b>вход для AI Roundtable</p>
+      </div>
+      <div class="gallery-card knowledge-card reveal" role="listitem">
+        <div class="gc-head"><h4>9. Discussion Card</h4><span class="status-badge placeholder">PLACEHOLDER</span></div>
+        <p class="gc-row"><b>Ontology source</b>Discussion</p>
+        <p class="gc-row"><b>Used in</b>Commons</p>
+        <p class="gc-example">Обсуждение: считать трещину шва L1 или L2 при повторе за сезон</p>
+        <p class="gc-row"><b>Future reuse</b>триггер для SOP Update</p>
+      </div>
+      <div class="gallery-card agent-card reveal" role="listitem">
+        <div class="gc-head"><h4>10. Agent Card</h4><span class="status-badge needs-review">NEEDS REVIEW</span></div>
+        <p class="gc-row"><b>Ontology source</b>AI Agent</p>
+        <p class="gc-row"><b>Used in</b>AI Stewardship Guide</p>
+        <p class="gc-example">Roof Agent: помогает понять домен ROOF. Не диагностирует и не принимает решения.</p>
+        <p class="gc-row"><b>Future reuse</b>самостоятельный продукт AI Agent Interface</p>
+      </div>
+      <div class="gallery-card media-card reveal" role="listitem">
+        <div class="gc-head"><h4>11. Media Card</h4><span class="status-badge future-module">FUTURE MODULE</span></div>
+        <p class="gc-row"><b>Ontology source</b>Media (проекция Knowledge Graph)</p>
+        <p class="gc-row"><b>Used in</b>Media Factory</p>
+        <p class="gc-example">Shorts «L1 vs L3 трещина» → вопрос аудитории → Commons</p>
+        <p class="gc-row"><b>Future reuse</b>производственная единица Media Factory</p>
+      </div>
+      <div class="gallery-card sop-card reveal" role="listitem">
+        <div class="gc-head"><h4>12. Value Card</h4><span class="status-badge placeholder">PLACEHOLDER</span></div>
+        <p class="gc-row"><b>Ontology source</b>CAPEX / Value</p>
+        <p class="gc-row"><b>Used in</b>Investment / Board Portal</p>
+        <p class="gc-example">CAPEX-план кровли → влияние на Value Preservation</p>
+        <p class="gc-row"><b>Future reuse</b>дашборд Investment / Board Portal</p>
+      </div>
+    </div>
+
+    <div class="divider" style="margin:56px 0 8px; background:rgba(248,245,239,.14)"></div>
+
+    <!-- Component Interaction Demo -->
+    <p class="eyebrow" style="margin-top:40px;">Как связаны элементы</p>
+    <h3 style="color:var(--paper); font-size:21px; margin-bottom:8px;">От узла онтологии — до продукта</h3>
+    <p style="font-size:14.5px;color:rgba(248,245,239,.65); max-width:680px;">Выберите узел онтологии — увидите цепочку,
+    по которой он уже стал компонентом интерфейса в этом прототипе, и где его можно переиспользовать дальше.</p>
+
+    <div class="demo-buttons" id="demo-buttons" role="group" aria-label="Узлы онтологии для демонстрации">
+      <button class="demo-btn" data-demo="symptom" aria-expanded="false" aria-controls="demo-answer">Symptom</button>
+      <button class="demo-btn" data-demo="domain" aria-expanded="false" aria-controls="demo-answer">Domain</button>
+      <button class="demo-btn" data-demo="evidence" aria-expanded="false" aria-controls="demo-answer">Evidence</button>
+      <button class="demo-btn" data-demo="act" aria-expanded="false" aria-controls="demo-answer">Act</button>
+      <button class="demo-btn" data-demo="case" aria-expanded="false" aria-controls="demo-answer">Case</button>
+      <button class="demo-btn" data-demo="agent" aria-expanded="false" aria-controls="demo-answer">AI Agent</button>
+      <button class="demo-btn" data-demo="value" aria-expanded="false" aria-controls="demo-answer">Value</button>
+    </div>
+
+    <div class="demo-answer" id="demo-answer" aria-live="polite"></div>
+
+    <div class="divider" style="margin:56px 0 8px; background:rgba(248,245,239,.14)"></div>
+
+    <!-- House Timeline -->
+    <p class="eyebrow" style="margin-top:40px;">История дома <span class="status-badge prototype" style="margin-left:8px;">PROTOTYPE</span></p>
+    <h3 style="color:var(--paper); font-size:21px; margin-bottom:8px;">Дом имеет историю, которую нужно сохранять</h3>
+    <p style="font-size:14.5px;color:rgba(248,245,239,.65); max-width:680px;">Это пример, а не история реального дома. Цель — показать,
+    что Act, CAPEX и Risk накапливаются во времени в одну непрерывную запись, а не теряются при смене председателя ОСИ.</p>
+
+    <div class="timeline">
+      <div class="timeline-item"><span class="ty">1974</span><p>Дом построен.</p></div>
+      <div class="timeline-item"><span class="ty">2008</span><p>Первый капитальный ремонт кровли.</p></div>
+      <div class="timeline-item"><span class="ty">2019</span><p>Повторяющиеся протечки — симптом, не зафиксированный как единая история.</p></div>
+      <div class="timeline-item"><span class="ty">2026</span><p>Первый осмотр по стандарту Housemaster.</p></div>
+      <div class="timeline-item"><span class="ty">2027</span><p>CAPEX-план кровли на основе накопленных актов.</p></div>
+      <div class="timeline-item"><span class="ty">2030</span><p>Building Health Score улучшается (placeholder-метрика).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 12. FINAL CTA ================= -->
+<section class="final-cta">
+  <div class="wrap">
+    <p class="eyebrow" style="justify-content:center;">Начните с одного дома</p>
+    <h2>Начните с одного вопроса о своём доме.</h2>
+    <div class="btn-row">
+      <a href="#symptoms" class="btn btn-gold">Найти симптом</a>
+      <a href="#house" class="btn btn-ghost-dark">Изучить дом</a>
+      <a href="#academy" class="btn btn-ghost-dark">Пройти первый мини-урок</a>
+      <a href="#partners" class="btn btn-ghost-dark">Обсудить пилот</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Housemaster — Портал заботы о доме · MVP-сборка (портал + раздел знаний по кровле + медиапакет)</span>
+    <span>Документ №0: HOUSEMASTER_SYSTEM_MANIFEST.md</span>
+  </div>
+  <div class="wrap" style="margin-top:8px;">
+    <span style="max-width:760px;">Некоторые модули (Помощник по дому, Карта знаний, будущие модули раздела «Опыт домов») являются демо и не обещают готовую функциональность — они показывают форму будущего интерфейса.</span>
+  </div>
+</footer>
+
+<!-- ================= GLOBAL CONTEXT PANEL (0.3) ================= -->
+<!-- Обновляется из House Map, Symptom Navigator, AI Guide, Knowledge Graph
+     и Component Interaction Demo. Первый шаг к настоящему Living Interface. -->
+<div class="context-panel" id="context-panel" aria-live="polite">
+  <button type="button" class="cp-close" id="context-panel-close" aria-label="Скрыть панель контекста">×</button>
+  <span class="cp-label">Selected context</span>
+  <div class="cp-chain" id="context-panel-chain"></div>
+</div>
+
+<script>
+/* ====================================================================
+   HOUSEMASTER PORTAL — prototype interactivity (Iteration 0.3)
+   Vanilla JS only. No dependencies.
+
+   Архитектурная карта (для будущего переноса в Codex / компонентную
+   систему). Код физически организован по фиче-модулям (1, 2, 2B, 2C,
+   2D), как и в 0.1/0.2 — переписывать рабочую структуру в 0.3 рискованно
+   (см. п.11 "не ломать текущую функциональность"). Ниже — карта того,
+   какой слой STATE / DATA / RENDERERS / EVENT HANDLERS / UTILS / INIT
+   к какому фиче-модулю относится; при переносе в Codex именно по этим
+   слоям и стоит резать файлы.
+
+   UTILS     — setGlobalContext(), truncate()            (этот блок)
+   STATE     — переменные вида activeXxx / selectedXxx внутри каждого модуля
+   DATA      — DOMAINS, SYMPTOM_LABELS, SYMPTOMS, AI_INTENTS,
+               KG_NODES/KG_ORDER, DEMO_NODES
+   RENDERERS — setActiveDomain(), renderSymptom(), renderAIGuide(),
+               renderKGNode(), renderDemo()
+   EVENT HANDLERS — addEventListener-вызовы под каждым renderer'ом
+   INIT      — модуль 3 (nav active-state + scroll reveal), выполняется
+               последним и подключает обсерверы ко всем секциям сразу
+
+   Модули:
+   1.  Domain map (cards <-> blueprint markers <-> detail panel <-> route)
+   2.  Symptom navigator (button -> answer panel -> cross-links domain)
+   2B. AI Stewardship Guide (intent -> space/artifact/agent/next action)
+   2C. Living Knowledge Graph Preview (13-node static demo graph)
+   2D. Component Interaction Demo (Interface Library, 0.3)
+   3.  Nav active-state + scroll reveal (IntersectionObserver)
+   ==================================================================== */
+(function(){
+  "use strict";
+
+  /* ================= UTILS ================= */
+  function truncate(str, n){
+    if(!str) return "";
+    return str.length > n ? str.slice(0, n - 1).trim() + "…" : str;
+  }
+
+  var ctxPanel = document.getElementById("context-panel");
+  var ctxChain = document.getElementById("context-panel-chain");
+  var ctxClose = document.getElementById("context-panel-close");
+  var ctxDismissed = false;
+
+  /** Обновляет Global Context Panel. parts — массив строк, склеивается через " → ". */
+  function setGlobalContext(parts){
+    if(!ctxPanel || !parts || !parts.length) return;
+    ctxChain.textContent = parts.map(function(p){ return truncate(p, 34); }).join(" → ");
+    if(!ctxDismissed) ctxPanel.classList.add("show");
+  }
+  if(ctxClose){
+    ctxClose.addEventListener("click", function(){
+      ctxPanel.classList.remove("show");
+      ctxDismissed = true;
+    });
+  }
+
+  /* ---------------- 1. DOMAIN DATA ---------------- */
+  var DOMAINS = {
+    ROOF: { name:"Кровля", symptom:"Пятно на потолке зимой, наледь и сосульки на карнизе.",
+      checks:"Покрытие, воронки внутреннего стока, парапет, примыкания — по плановому маршруту осмотра кровли.",
+      artifact:"Акт осмотра кровли; при повторной протечке — сигнал на CAPEX.",
+      symptoms:["ceiling"],
+      route:["Пятно на потолке / наледь / протечка","Чек-лист кровли","Акт осмотра кровли","SOP сезонного осмотра","Кейс: протечка после снеготаяния","Commons discussion","Roof Agent"] },
+    BASE: { name:"Подвал", symptom:"Сырость, запах, подтопление у вводов труб.",
+      checks:"Вводы ХВС/ГВС/отопления, дренаж, гидроизоляция фундамента, состояние продухов.",
+      artifact:"Акт осмотра подвала; при запахе газа — отдельный протокол безопасности (см. раздел «Симптомы»).",
+      symptoms:["smell","water"],
+      route:["Запах / подтопление у вводов труб","Чек-лист подвала + Red Flag протокол","Акт осмотра подвала","SOP осмотра при подтоплении","Кейс: подтопление после паводка","Commons discussion","Base Agent"] },
+    HEAT: { name:"Отопление", symptom:"Холодный радиатор при горячем стояке, недогрев по подъезду.",
+      checks:"ИТП, циркуляционный насос, балансировка стояков от теплового узла до квартиры.",
+      artifact:"Акт диагностики недогрева; решение о балансировке или ремонте ИТП.",
+      symptoms:["cold"],
+      route:["Холодная квартира / недогрев","Чек-лист ИТП и стояков","Акт диагностики недогрева","SOP подготовки к отопительному сезону","Кейс: разбалансировка контура","Commons discussion","Heat Agent"] },
+    WATR: { name:"Водоснабжение", symptom:"Слабый напор, отсутствие горячей воды по стояку.",
+      checks:"Водомерный узел, стояки ХВС/ГВС, запорная арматура, давление в системе.",
+      artifact:"Акт осмотра водомерного узла; заявка на замену участка стояка при течи.",
+      symptoms:[],
+      route:["Слабый напор / нет ГВС по стояку","Чек-лист водомерного узла","Акт осмотра водоснабжения","SOP контроля давления","Кейс: течь стояка ГВС","Commons discussion","Water Agent"] },
+    SEWR: { name:"Канализация", symptom:"Запах в подъезде, засор стояка, протечка лежака.",
+      checks:"Канализационные стояки, лежаки в подвале, ревизионные люки.",
+      artifact:"Акт осмотра + наряд на прочистку; контроль повторяемости запаха.",
+      symptoms:[],
+      route:["Запах в подъезде / засор стояка","Чек-лист ревизий и лежаков","Акт осмотра + наряд на прочистку","SOP контроля повторяемости","Кейс: хронический запах на этаже","Commons discussion","Sewer Agent"] },
+    ELEC: { name:"Электроснабжение", symptom:"Тёмный подъезд, искрение в щитке, перебои освещения.",
+      checks:"ВРУ, этажные щитки, кабельные линии, освещение МОП.",
+      artifact:"Акт осмотра ВРУ; при искрении — Red Flag протокол без самостоятельного вмешательства.",
+      symptoms:["spark"],
+      route:["Искрение в щитке / нет освещения","Red Flag протокол + чек-лист ВРУ","Акт осмотра электрощитка","SOP аварийного реагирования","Кейс: искрение этажного щитка","Commons discussion","Elec Agent"] },
+    FACD: { name:"Фасад", symptom:"Трещина в межпанельном шве, нарушение облицовки.",
+      checks:"Межпанельные швы, облицовка, окна МОП, балконные плиты — сезонный осмотр.",
+      artifact:"Акт осмотра фасада; наблюдение за динамикой трещины при повторных осмотрах.",
+      symptoms:["crack"],
+      route:["Трещина в шве / нарушение облицовки","Чек-лист сезонного осмотра фасада","Акт осмотра фасада","SOP наблюдения за динамикой","Кейс: трещина шва на торце дома","Commons discussion","Facade Agent"] },
+    CMNA: { name:"Подъезд / МОП", symptom:"Неисправный доводчик, разбитое окно, тёплопотери подъезда.",
+      checks:"Входные двери, доводчики, окна МОП, лестничные клетки.",
+      artifact:"Чек-лист планового обхода МОП; заявка на ремонт входной группы.",
+      symptoms:[],
+      route:["Неисправный доводчик / разбитое окно","Чек-лист обхода МОП","Акт осмотра входной группы","SOP планового обхода","Кейс: теплопотери подъезда зимой","Commons discussion","Entrance Agent"] },
+    LIFT: { name:"Лифт", symptom:"Застревание, неисправность дверей, просроченное освидетельствование.",
+      checks:"Кабина, привод, система аварийной сигнализации — в координации с лифтовой организацией.",
+      artifact:"Контроль договора обслуживания; координация аварийного вызова при застревании.",
+      symptoms:[],
+      route:["Застревание / неисправность дверей","Координация с лифтовой организацией","Акт + аварийный вызов","SOP контроля освидетельствования","Кейс: просрочка освидетельствования","Commons discussion","Lift Agent"] },
+    YARD: { name:"Двор", symptom:"Разрушение покрытия, неисправность освещения, повреждение площадки.",
+      checks:"Проезды, дворовое освещение, ограждение, оборудование детской площадки.",
+      artifact:"Акт сезонного осмотра территории (весна / осень).",
+      symptoms:[],
+      route:["Разрушение покрытия / нет освещения","Чек-лист сезонного осмотра двора","Акт осмотра территории","SOP весеннего / осеннего обхода","Кейс: травмоопасность на площадке","Commons discussion","Yard Agent"] }
+  };
+
+  var SYMPTOM_LABELS = { ceiling:"Пятно на потолке", cold:"Холодная квартира", smell:"Запах в подвале", spark:"Искрение в щитке", water:"Вода в подвале", crack:"Трещина на фасаде" };
+
+  var grid = document.getElementById("domain-grid");
+  var detail = document.getElementById("domain-detail");
+  var markers = document.querySelectorAll(".blueprint-marker");
+
+  function setActiveDomain(code, fromCrosslink){
+    if(!DOMAINS[code]) return;
+    var d = DOMAINS[code];
+
+    // cards (+ aria-expanded)
+    grid.querySelectorAll(".domain-card").forEach(function(c){
+      var isActive = c.getAttribute("data-domain") === code;
+      c.classList.toggle("active", isActive);
+      c.setAttribute("aria-expanded", isActive ? "true" : "false");
+    });
+    // markers
+    markers.forEach(function(m){
+      m.classList.toggle("active", m.getAttribute("data-domain") === code);
+    });
+
+    // related symptoms (reverse cross-link)
+    var relHtml;
+    if(d.symptoms && d.symptoms.length){
+      relHtml = '<div class="rel-sym-row">' + d.symptoms.map(function(k){
+        return '<button type="button" class="rel-sym-chip" data-jump-symptom="' + k + '">' + (SYMPTOM_LABELS[k] || k) + '</button>';
+      }).join("") + '</div>';
+    } else {
+      relHtml = '<p class="no-rel">Для этого домена в текущей версии навигатора симптомы не заведены.</p>';
+    }
+
+    // route chain
+    var routeHtml = '<div class="route-chain">' + d.route.map(function(step, i){
+      var labels = ["Symptoms","Checklist","Act","SOP","Case","Discussion","AI Agent"];
+      return '<div class="route-step"><span class="rk">' + (labels[i] || "") + '</span><span>' + step + '</span></div>';
+    }).join("") + '</div>';
+
+    // detail panel
+    detail.innerHTML =
+      '<span class="code-big">' + code + '</span>' +
+      '<h3>' + d.name + '</h3>' +
+      '<dl>' +
+        '<dt>Что замечает житель</dt><dd>' + d.symptom + '</dd>' +
+        '<dt>Что проверяет хаузмастер</dt><dd>' + d.checks + '</dd>' +
+        '<dt>Какой документ возникает</dt><dd>' + d.artifact + '</dd>' +
+      '</dl>' +
+      '<div class="domain-route"><span class="route-label">Domain Route</span>' + routeHtml + '</div>' +
+      '<div class="related-symptoms"><span class="route-label">Связанные симптомы</span>' + relHtml + '</div>' +
+      (fromCrosslink ? '<p class="crosslink-note">↑ открыто автоматически по выбранному симптому</p>' : '');
+
+    // wire up "jump to symptom" chips
+    detail.querySelectorAll("[data-jump-symptom]").forEach(function(chip){
+      chip.addEventListener("click", function(){
+        var key = chip.getAttribute("data-jump-symptom");
+        renderSymptom(key, true);
+        document.getElementById("symptoms").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+    });
+
+    // Global Context Panel: domain code + curated route highlights (Symptom / Checklist / Act / Case / Agent)
+    setGlobalContext([code, d.route[0], d.route[1], d.route[2], d.route[4], d.route[6]]);
+  }
+
+  if(grid){
+    grid.addEventListener("click", function(e){
+      var btn = e.target.closest(".domain-card");
+      if(btn) setActiveDomain(btn.getAttribute("data-domain"));
+    });
+  }
+  markers.forEach(function(m){
+    m.addEventListener("click", function(){ setActiveDomain(m.getAttribute("data-domain")); });
+    m.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); setActiveDomain(m.getAttribute("data-domain")); }
+    });
+  });
+
+  /* ---------------- 2. SYMPTOM NAVIGATOR ---------------- */
+  var SYMPTOMS = {
+    ceiling: { domain:"ROOF", level:"l2", levelLabel:"L2 · требует внимания",
+      title:"Пятно на потолке",
+      action:"Сфотографируйте пятно и отметьте дату появления. Не вскрывайте потолок и не пытайтесь устранить причину самостоятельно.",
+      next:"Сообщите хаузмастеру или председателю ОСИ — нужен осмотр кровли и чердачного перекрытия. Это вопрос дома, а не вашей квартиры." },
+    cold: { domain:"HEAT", level:"l2", levelLabel:"L2 · требует внимания",
+      title:"Холодная квартира при горячем стояке",
+      action:"Проверьте на ощупь, тёплый ли стояк в подъезде. Не разбирайте и не сливайте радиатор самостоятельно.",
+      next:"Это вопрос балансировки системы отопления всего дома, а не отдельной батареи — обратитесь к хаузмастеру." },
+    smell: { domain:"BASE", level:"l3", levelLabel:"Зависит от типа запаха", redflag:true,
+      title:"Запах в подвале",
+      action:"Если запах напоминает запах газа — не включайте свет, не пользуйтесь спичками или телефоном в подвале. Немедленно выйдите и сообщите аварийной газовой службе.",
+      next:"Если это запах сырости или канализации — сообщите хаузмастеру для планового осмотра подвала. Уровень внимания: L1–L2." },
+    spark: { domain:"ELEC", level:"l3", levelLabel:"L3 · аварийный, Red Flag", redflag:true,
+      title:"Искрение в электрощитке",
+      action:"Не открывайте щиток и не трогайте провода. Отойдите от щитка на безопасное расстояние.",
+      next:"Не входите в опасную зону. Сообщите ответственным аварийным службам немедленно. Документирование — после устранения угрозы." },
+    water: { domain:"BASE", level:"l2", levelLabel:"L2 · требует внимания",
+      title:"Вода в подвале",
+      action:"Зафиксируйте уровень воды на фото, если это безопасно. Не входите в подвал при наличии оголённой проводки в воде.",
+      next:"Сообщите хаузмастеру — нужен осмотр ввода труб и дренажа." },
+    crack: { domain:"FACD", level:"l1", levelLabel:"L1 · плановое наблюдение",
+      title:"Трещина на фасаде",
+      action:"Сфотографируйте трещину рядом с предметом известного размера (монета, ладонь) — это поможет оценить динамику.",
+      next:"Большинство трещин в межпанельных швах не аварийны, но требуют наблюдения. Сообщите хаузмастеру для оценки и плановой фиксации." }
+  };
+
+  var symBox = document.getElementById("symptom-answer");
+  var symButtons = document.getElementById("symptom-buttons");
+
+  function renderSymptom(key, fromCrosslink){
+    var s = SYMPTOMS[key];
+    if(!s) return;
+    symButtons.querySelectorAll(".symptom-btn").forEach(function(b){
+      var isActive = b.getAttribute("data-symptom") === key;
+      b.classList.toggle("active", isActive);
+      b.setAttribute("aria-expanded", isActive ? "true" : "false");
+    });
+    symBox.classList.toggle("redflag", !!s.redflag);
+    symBox.innerHTML =
+      '<div class="sym-meta">' +
+        '<span class="pill">Домен: ' + s.domain + '</span>' +
+        '<span class="pill ' + s.level + '">' + s.levelLabel + '</span>' +
+      '</div>' +
+      '<h4>' + s.title + '</h4>' +
+      '<p class="safe-action">' + s.action + '</p>' +
+      '<p>' + s.next + '</p>' +
+      (s.redflag ? '<div class="redflag-note">Безопасность не обсуждается: там, где есть угроза жизни, действие предшествует анализу.</div>' : '') +
+      '<p class="crosslink-note">→ соответствующий домен <strong>' + s.domain + '</strong> открыт в разделе «Дом как система» выше.</p>';
+    symBox.classList.add("show");
+
+    // cross-link: highlight the related domain in House Map (without forcing a scroll)
+    setActiveDomain(s.domain, !fromCrosslink);
+  }
+
+  if(symButtons){
+    symButtons.addEventListener("click", function(e){
+      var btn = e.target.closest(".symptom-btn");
+      if(btn) renderSymptom(btn.getAttribute("data-symptom"));
+    });
+  }
+
+  /* ---------------- 2B. AI STEWARDSHIP GUIDE ----------------
+     Не chat-бот: заранее заданные ответы на 6 намерений,
+     демонстрирующие форму будущего guide-интерфейса. */
+  var AI_INTENTS = {
+    understand: { label:"Понять дом", space:"Дом как система (House Map)", artifact:"— (обзорный режим, без документа)",
+      agent:"House Guide Agent", action:"house", actionLabel:"Открыть House Map" },
+    symptom: { label:"Найти симптом", space:"Diagnostic Navigator", artifact:"Запись симптома → пара Domain / Severity",
+      agent:"Symptom Agent", action:"symptoms", actionLabel:"Открыть навигатор симптомов" },
+    winter: { label:"Подготовить дом к зиме", space:"House Map — домены HEAT, ROOF, FACD", artifact:"Сезонный чек-лист подготовки к отопительному сезону",
+      agent:"Seasonal Readiness Agent", action:"house", actionLabel:"Открыть HEAT route", domain:"HEAT" },
+    roof: { label:"Изучить кровлю", space:"Дом как система / ROOF", artifact:"Checklist + Act",
+      agent:"Roof Agent", action:"house", actionLabel:"Открыть ROOF route", domain:"ROOF" },
+    meeting: { label:"Подготовить собрание ОСИ", space:"Роли — Председатель ОСИ", artifact:"Подготовленная повестка на основе истории дома",
+      agent:"Governance Agent", action:"roles", actionLabel:"Открыть раздел «Роли»" },
+    lesson: { label:"Пройти мини-урок", space:"Academy · Learning Interface", artifact:"Пройденный короткий урок (учебный режим)",
+      agent:"Academy Agent", action:"academy", actionLabel:"Открыть Academy" }
+  };
+
+  var aiGrid = document.getElementById("ai-guide-grid");
+  var aiBox = document.getElementById("ai-guide-answer");
+
+  function renderAIGuide(key){
+    var g = AI_INTENTS[key];
+    if(!g) return;
+    aiGrid.querySelectorAll(".ai-guide-btn").forEach(function(b){
+      var isActive = b.getAttribute("data-intent") === key;
+      b.classList.toggle("active", isActive);
+      b.setAttribute("aria-expanded", isActive ? "true" : "false");
+    });
+    aiBox.innerHTML =
+      '<span class="card-kind">Помощник по дому</span>' +
+      '<h4>«' + g.label + '»</h4>' +
+      '<dl>' +
+        '<dt>Space</dt><dd>' + g.space + '</dd>' +
+        '<dt>Artifact</dt><dd>' + g.artifact + '</dd>' +
+        '<dt>Future agent</dt><dd>' + g.agent + '</dd>' +
+        '<dt>Next action</dt><dd><button type="button" class="btn btn-ghost-light" id="ai-next-action" style="padding:8px 16px;font-size:13px;">' + g.actionLabel + ' →</button></dd>' +
+      '</dl>';
+    aiBox.classList.add("show");
+
+    var actionBtn = document.getElementById("ai-next-action");
+    if(actionBtn){
+      actionBtn.addEventListener("click", function(){
+        if(g.domain) setActiveDomain(g.domain);
+        var target = document.getElementById(g.action);
+        if(target) target.scrollIntoView({behavior:"smooth", block:"start"});
+      });
+    }
+
+    setGlobalContext(["AI Guide: " + g.label, g.space, g.artifact, g.agent]);
+  }
+
+  if(aiGrid){
+    aiGrid.addEventListener("click", function(e){
+      var btn = e.target.closest(".ai-guide-btn");
+      if(btn) renderAIGuide(btn.getAttribute("data-intent"));
+    });
+  }
+
+  /* ---------------- 2C. LIVING KNOWLEDGE GRAPH PREVIEW ---------------- */
+  var KG_NODES = {
+    building:  { name:"Дом", en:"Building",   meaning:"Сам многоквартирный дом — верхняя сущность, к которой привязано всё остальное.", example:"Конкретный дом по конкретному адресу в Семее.", where:"Hero-схема, House Map." },
+    domain:    { name:"Система дома", en:"Domain",     meaning:"Одна из десяти инженерных систем дома.", example:"ROOF, HEAT, ELEC и ещё семь доменов.", where:"House Map, Domain Route." },
+    system:    { name:"Подсистема", en:"System",     meaning:"Конкретная подсистема внутри домена.", example:"Внутри HEAT — контур ИТП и контур стояков.", where:"Ontology (внутренний слой, на портале не детализируется)." },
+    component: { name:"Элемент", en:"Component",  meaning:"Физический элемент, который может выйти из строя.", example:"Воронка водостока, секция радиатора, доводчик двери.", where:"Чек-лист осмотра внутри Domain Route." },
+    condition: { name:"Состояние", en:"Condition",  meaning:"Текущее состояние компонента — изношен, исправен, под наблюдением.", example:"«Уплотнитель шва частично разрушен».", where:"Внутреннее поле акта осмотра." },
+    symptom:   { name:"Симптом", en:"Symptom",    meaning:"То, что замечает житель — ещё не диагноз.", example:"Пятно на потолке, запах в подвале, искрение.", where:"Symptom Navigator." },
+    defect:    { name:"Дефект", en:"Defect",     meaning:"Подтверждённая хаузмастером причина симптома, с уровнем серьёзности.", example:"ROOF-L2: протечка примыкания после снеготаяния.", where:"Domain Route — шаг после Checklist." },
+    inspection:{ name:"Осмотр", en:"Inspection", meaning:"Сам визит и проверка по стандартному маршруту.", example:"Плановый сезонный осмотр кровли.", where:"Domain Route, HBOS Behavioral Loop." },
+    evidence:  { name:"Подтверждение", en:"Evidence",   meaning:"Фото, замер или другое подтверждение находки.", example:"Фото протечки с привязкой к дате и месту.", where:"Commons → Latest Cases." },
+    act:       { name:"Акт", en:"Act",        meaning:"Формальный документ, фиксирующий результат осмотра.", example:"Акт осмотра кровли №…", where:"Domain Route, Role Cards (Хаузмастер)." },
+    risk:      { name:"Риск", en:"Risk",      meaning:"Оценка вероятности и тяжести последствий, если не вмешаться.", example:"Третья протечка за сезон → сигнал на CAPEX.", where:"Commons → SOP Update." },
+    capex:     { name:"Капитальное решение", en:"CAPEX",      meaning:"Решение о капитальном вложении в обновление дома.", example:"Замена участка кровельного покрытия.", where:"Charter, принцип «Капитализация»." },
+    value:     { name:"Стоимость", en:"Value",     meaning:"Эффект для стоимости дома и квартиры — то, ради чего работает весь граф.", example:"Сохранённая стоимость квартиры после своевременного ремонта.", where:"Hero, Final CTA." }
+  };
+  var KG_ORDER = ["building","domain","system","component","condition","symptom","defect","inspection","evidence","act","risk","capex","value"];
+
+  var kgGrid = document.getElementById("kg-grid");
+  var kgBox = document.getElementById("kg-detail");
+
+  function renderKGNode(key){
+    var n = KG_NODES[key];
+    if(!n) return;
+    kgGrid.querySelectorAll(".kg-node").forEach(function(b){
+      var isActive = b.getAttribute("data-node") === key;
+      b.classList.toggle("active", isActive);
+      b.setAttribute("aria-expanded", isActive ? "true" : "false");
+    });
+    var idx = KG_ORDER.indexOf(key);
+    kgBox.innerHTML =
+      '<span class="card-kind">Узел ' + (idx+1) + ' из 13</span>' +
+      '<h4>' + n.name + ' <small style="opacity:.5;font-weight:400;font-size:13px;">(' + n.en + ')</small></h4>' +
+      '<div class="kg-row"><b>Простыми словами</b>' + n.meaning + '</div>' +
+      '<div class="kg-row"><b>Пример</b>' + n.example + '</div>' +
+      '<div class="kg-row"><b>Где встречается на портале</b>' + n.where + '</div>';
+    kgBox.classList.add("show");
+    setGlobalContext(["KG Node: " + n.name, n.meaning, n.where]);
+  }
+
+  if(kgGrid){
+    kgGrid.addEventListener("click", function(e){
+      var btn = e.target.closest(".kg-node");
+      if(btn) renderKGNode(btn.getAttribute("data-node"));
+    });
+  }
+
+  /* ---------------- 2D. COMPONENT INTERACTION DEMO (Interface Library, 0.3) ----------------
+     Ontology Node → Component → Interface → Product Reuse */
+  var DEMO_NODES = {
+    symptom: { node:"Symptom", component:"Symptom Card", iface:"Diagnostic Navigator",
+      reuse:"PWA claim form / TikTok microlearning / Academy quiz" },
+    domain:  { node:"Domain", component:"Domain Card", iface:"House Map",
+      reuse:"PWA inspection route picker / Regional Observatory domain filter" },
+    evidence:{ node:"Evidence", component:"Evidence Card", iface:"PWA inspection flow (будущая итерация)",
+      reuse:"вложение к Case Card / Investment Portal audit trail" },
+    act:     { node:"Act", component:"Artifact Card", iface:"House Map Domain Route / House Timeline",
+      reuse:"запись в документ-журнале Investment / Board Portal" },
+    case:    { node:"Case", component:"Case Card", iface:"Commons Preview",
+      reuse:"исходный материал для Media Factory / триггер SOP Update" },
+    agent:   { node:"AI Agent", component:"Agent Card", iface:"AI Stewardship Guide",
+      reuse:"самостоятельный продукт AI Agent Interface" },
+    value:   { node:"Value", component:"Value Card", iface:"Charter «Капитализация» / Final CTA",
+      reuse:"дашборд CAPEX в Investment / Board Portal" }
+  };
+
+  var demoButtons = document.getElementById("demo-buttons");
+  var demoBox = document.getElementById("demo-answer");
+
+  function renderDemo(key){
+    var d = DEMO_NODES[key];
+    if(!d) return;
+    demoButtons.querySelectorAll(".demo-btn").forEach(function(b){
+      var isActive = b.getAttribute("data-demo") === key;
+      b.classList.toggle("active", isActive);
+      b.setAttribute("aria-expanded", isActive ? "true" : "false");
+    });
+    demoBox.innerHTML =
+      '<div class="demo-chain">' +
+        '<span class="dc-step">' + d.node + '</span><span class="dc-arrow">→</span>' +
+        '<span class="dc-step">' + d.component + '</span><span class="dc-arrow">→</span>' +
+        '<span class="dc-step">' + d.iface + '</span><span class="dc-arrow">→</span>' +
+        '<span class="dc-step">' + d.reuse + '</span>' +
+      '</div>';
+    demoBox.classList.add("show");
+    setGlobalContext(["Ontology: " + d.node, d.component, d.iface, d.reuse]);
+  }
+
+  if(demoButtons){
+    demoButtons.addEventListener("click", function(e){
+      var btn = e.target.closest(".demo-btn");
+      if(btn) renderDemo(btn.getAttribute("data-demo"));
+    });
+  }
+
+  /* ---------------- 3. NAV ACTIVE STATE + SCROLL REVEAL (also acts as INIT) ---------------- */
+  var navLinks = document.querySelectorAll("#primary-nav a");
+  var sections = Array.prototype.map.call(navLinks, function(a){
+    return document.querySelector(a.getAttribute("href"));
+  }).filter(Boolean);
+
+  if("IntersectionObserver" in window){
+    var navObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var id = "#" + entry.target.id;
+          navLinks.forEach(function(a){
+            a.classList.toggle("active", a.getAttribute("href") === id);
+          });
+        }
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    sections.forEach(function(s){ navObserver.observe(s); });
+
+    var revealObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add("in");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal").forEach(function(el){ revealObserver.observe(el); });
+  } else {
+    document.querySelectorAll(".reveal").forEach(function(el){ el.classList.add("in"); });
+  }
+
+})();
+</script>
+</body>
+</html>
